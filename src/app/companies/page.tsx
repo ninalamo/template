@@ -1,4 +1,10 @@
+'use client'
+
+import SortableTable from "@/components/SortableTable"
+import { useMemo, useState } from "react";
+
 export default function Companies(){
+
     const companies = [
       {
         id: 1,
@@ -8,58 +14,81 @@ export default function Companies(){
       },
       {
         id: 2,
-        name: "Cognizant",
+        name: "ABC Company",
         industry: "Outsourcing",
         description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, inventore quisquam! Illo facilis nemo corporis aliquid perferendis obcaecati libero facere!"
       },
       {
         id: 3,
-        name: "Cognizant",
+        name: "SM Corp",
         industry: "Outsourcing",
         description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, inventore quisquam! Illo facilis nemo corporis aliquid perferendis obcaecati libero facere!"
       },
       {
         id: 4,
-        name: "Cognizant",
+        name: "Ayala Group",
         industry: "Outsourcing",
         description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, inventore quisquam! Illo facilis nemo corporis aliquid perferendis obcaecati libero facere!"
       },
       {
         id: 5,
-        name: "Cognizant",
+        name: "Diversify",
         industry: "Outsourcing",
         description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, inventore quisquam! Illo facilis nemo corporis aliquid perferendis obcaecati libero facere!"
       },
       {
         id: 6,
-        name: "Cognizant",
+        name: "J&J",
+        industry: "Outsourcing",
+        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, inventore quisquam! Illo facilis nemo corporis aliquid perferendis obcaecati libero facere!"
+      },
+      {
+        id: 7,
+        name: "KMC",
+        industry: "Outsourcing",
+        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, inventore quisquam! Illo facilis nemo corporis aliquid perferendis obcaecati libero facere!"
+      },
+      {
+        id: 8,
+        name: "Arla",
+        industry: "Outsourcing",
+        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, inventore quisquam! Illo facilis nemo corporis aliquid perferendis obcaecati libero facere!"
+      },
+      {
+        id: 9,
+        name: "Green Archers",
+        industry: "Outsourcing",
+        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, inventore quisquam! Illo facilis nemo corporis aliquid perferendis obcaecati libero facere!"
+      },
+      {
+        id: 10,
+        name: "Jollibee Corp",
         industry: "Outsourcing",
         description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, inventore quisquam! Illo facilis nemo corporis aliquid perferendis obcaecati libero facere!"
       }
     ]
 
+    const columns = useMemo(() => [
+        {
+            header: 'Name',
+            accessorKey: 'name'
+        },
+        {
+            header: 'Industry',
+            accessorKey: 'industry'
+        },
+        {
+            header: 'Description',
+            accessorKey: 'description'
+        }
+    ],[])
+
 
     return (
         <div>
           <h1>Companies</h1>
-          <table className="table-fixed items-center bg-transparent w-full border-collapse">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Industry</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              {companies && companies.map((company) => {
-                 return <tr key={company.id}>
-                  <td>{company.name}</td>
-                  <td>{company.industry}</td>
-                  <td>{company.description.slice(0,30)}...</td>
-               </tr>
-              })}
-            </tbody>
-          </table>
+
+          <SortableTable data={companies} columns={columns}/>
         </div>
       )
 }
