@@ -1,7 +1,10 @@
 'use client'
 
 import SortableTable from "@/components/SortableTable"
-import { useMemo, useState } from "react";
+import { Company } from "@/models/Company";
+import { ColumnDef } from "@tanstack/react-table";
+import Link from "next/link";
+import { useMemo } from "react";
 
 export default function Companies(){
 
@@ -68,20 +71,41 @@ export default function Companies(){
       }
     ]
 
-    const columns = useMemo(() => [
+    const columns = useMemo<ColumnDef<Company>[]>(
+      () => [
         {
-            header: 'Name',
-            accessorKey: 'name'
+          accessorKey: 'id'
         },
         {
-            header: 'Industry',
-            accessorKey: 'industry'
+          header: 'Name',
+          accessorKey: 'name',
+          cell: ({row}) => (<Link className="hover:text-orange-400 hover:font-bold" href={{pathname: `/companies/${row.getValue('id')}`}}>{row.getValue('name')}</Link>)
         },
         {
-            header: 'Description',
-            accessorKey: 'description'
+          header: 'Industry',
+          accessorKey: 'industry',
+        },
+        {
+          header: 'Description',
+          accessorKey: 'description',
         }
-    ],[])
+      ]
+    ,[]);
+
+    // const columns = useMemo(() => [
+    //     {
+    //         header: 'Name',
+    //         accessorKey: 'name'
+    //     },
+    //     {
+    //         header: 'Industry',
+    //         accessorKey: 'industry'
+    //     },
+    //     {
+    //         header: 'Description',
+    //         accessorKey: 'description'
+    //     }
+    // ],[])
 
 
     return (
