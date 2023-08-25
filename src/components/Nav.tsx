@@ -38,7 +38,7 @@ export default function Nav(){
             return (
              <Link key={nav.name}
               href={nav.href} 
-              className={(pathname === nav.href? 'text-orange-400 border-b-4 border-orange-400 ': '') + "py-2.5 text-gray-800 text-sm font-semibold hover:text-orange-400 mr-4"}>
+              className={(pathname === nav.href? 'text-orange-400 border-orange-400 ': 'border-white ') + "w-24 text-center border-b-4 py-2.5 text-gray-800 text-sm font-semibold hover:text-orange-400 mr-4"}>
                 {nav.name}
             </Link>
             )

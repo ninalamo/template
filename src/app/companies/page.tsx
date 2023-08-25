@@ -1,6 +1,7 @@
 'use client'
 
 import SortableTable from "@/components/SortableTable"
+import { Button } from "@/components/ui/button";
 import { Company } from "@/models/Company";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
@@ -112,6 +113,13 @@ export default function Companies(){
         <div>
           <h1>Companies</h1>
 
+          {/* className="bg-orange-400 py-3 px-5 rounded-full text-white hover:bg-orange-300" */}
+
+          <div className="mb-5">
+                <Button asChild >
+                    <Link href="/companies/create">New Company</Link>
+                </Button>
+          </div>
           <SortableTable data={companies} columns={columns}/>
         </div>
       )
