@@ -29,7 +29,11 @@ const formSchema = z.object({
   company_name: z.string().min(2, {
     message: "Company name must be at least 2 characters."
   }).max(50),
-  industry: z.string(),
+  industry: z.string({
+    required_error: "Industry is required."
+  }).min(1, {
+    message: "Industry is required."
+  }),
   is_discreet: z.boolean().default(false).optional(),
   subscription: z.string()
 })
