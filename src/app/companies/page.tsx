@@ -1,7 +1,11 @@
 'use client'
 
 import SortableTable from "@/components/SortableTable"
-import { useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Company } from "@/models/Company";
+import { ColumnDef } from "@tanstack/react-table";
+import Link from "next/link";
+import { useMemo } from "react";
 
 export default function Companies(){
 
@@ -68,26 +72,54 @@ export default function Companies(){
       }
     ]
 
-    const columns = useMemo(() => [
+    const columns = useMemo<ColumnDef<Company>[]>(
+      () => [
         {
-            header: 'Name',
-            accessorKey: 'name'
+          accessorKey: 'id'
         },
         {
-            header: 'Industry',
-            accessorKey: 'industry'
+          header: 'Name',
+          accessorKey: 'name',
+          cell: ({row}) => (<Link className="hover:text-orange-400 hover:font-bold" href={{pathname: `/companies/${row.getValue('id')}`}}>{row.getValue('name')}</Link>)
         },
         {
-            header: 'Description',
-            accessorKey: 'description'
+          header: 'Industry',
+          accessorKey: 'industry',
+        },
+        {
+          header: 'Description',
+          accessorKey: 'description',
         }
-    ],[])
+      ]
+    ,[]);
+
+    // const columns = useMemo(() => [
+    //     {
+    //         header: 'Name',
+    //         accessorKey: 'name'
+    //     },
+    //     {
+    //         header: 'Industry',
+    //         accessorKey: 'industry'
+    //     },
+    //     {
+    //         header: 'Description',
+    //         accessorKey: 'description'
+    //     }
+    // ],[])
 
 
     return (
         <div>
           <h1>Companies</h1>
 
+          {/* className="bg-orange-400 py-3 px-5 rounded-full text-white hover:bg-orange-300" */}
+
+          <div className="mb-5">
+                <Button asChild >
+                    <Link href="/companies/create">New Company</Link>
+                </Button>
+          </div>
           <SortableTable data={companies} columns={columns}/>
         </div>
       )

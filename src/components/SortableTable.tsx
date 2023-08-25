@@ -9,6 +9,9 @@ export default function SortableTable(
     
     const table = useReactTable({data, columns, state:{
         sorting,
+        columnVisibility: {
+          'id': false
+        }
     }, 
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),

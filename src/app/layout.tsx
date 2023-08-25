@@ -25,7 +25,7 @@ export default function RootLayout({
         <div className="bg-gray-100 w-full min-h-screen m-0">
           <Nav />
 
-          <div className="container mx-auto px-4 py-4">
+          <div className="container mx-auto px-4 py-4 mt-3">
             {children}
           </div>
         </div>

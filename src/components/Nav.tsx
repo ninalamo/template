@@ -1,20 +1,51 @@
+'use client'
+
 import Link from "next/link";
+import { usePathname  } from 'next/navigation';
+
+const navigationLinks = [
+  {
+    name: "Dashboard",
+    href: "/"
+  },
+  {
+    name: "Companies",
+    href: "/companies"
+  },
+  {
+    name: "People",
+    href: "/people"
+  },
+  {
+    name: "Subscriptions",
+    href: "/subscriptions"
+  }
+]
+
 
 export default function Nav(){
-    return <div className="bg-white shadow">
+  const pathname = usePathname ();
+
+  return <div className="bg-white shadow">
     <div className="container mx-auto px-4">
-      <div className="flex items-center justify-between py-4">
+      <div className="flex items-center justify-between pt-4">
         <div>
           <span className="font-bold">SonicLynx</span>
         </div>
 
         <div className="hidden sm:flex sm:items-center">
-          <Link href="/" className="text-gray-800 text-sm font-semibold hover:text-orange-400 mr-4">Dashboard</Link>
-          <Link href="/companies" className="text-gray-800 text-sm font-semibold hover:text-orange-400 mr-4">Companies</Link>
-          <Link href="/people" className="text-gray-800 text-sm font-semibold hover:text-orange-400 mr-4">People</Link>
-          <Link href="/subscriptions" className="text-gray-800 text-sm font-semibold hover:text-orange-400">Subscriptions</Link>
+          {navigationLinks.map(nav => {
+            return (
+             <Link key={nav.name}
+              href={nav.href} 
+              className={(pathname === nav.href? 'text-orange-400 border-orange-400 ': 'border-white ') + "w-24 text-center border-b-4 py-2.5 text-gray-800 text-sm font-semibold hover:text-orange-400 mr-4"}>
+                {nav.name}
+            </Link>
+            )
+          })}
         </div>
 
+        {/* Auth */}
         <div className="hidden sm:flex sm:items-center">
           <Link href="#" className="text-gray-800 text-sm font-semibold hover:text-orange-400 mr-4">Sign in</Link>
           <Link href="#" className="text-gray-800 text-sm font-semibold border px-4 py-2 rounded-lg hover:text-orange-400 hover:border-purple-600">Sign up</Link>
@@ -29,11 +60,13 @@ export default function Nav(){
       
       <div className="block sm:hidden bg-white border-t-2 py-2">
         <div className="flex flex-col">
-          <Link href="/" className="text-gray-800 text-sm font-semibold hover:text-orange-400 mb-1">Dashboard</Link>
-          <Link href="/companies" className="text-gray-800 text-sm font-semibold hover:text-orange-400 mb-1">Companies</Link>
-          <Link href="/people" className="text-gray-800 text-sm font-semibold hover:text-orange-400 mb-1">People</Link>
-          <Link href="/subscriptions" className="text-gray-800 text-sm font-semibold hover:text-orange-400 mb-1">Subscriptions</Link>
-          <div className="flex justify-between items-center border-t-2 pt-2">
+        {navigationLinks.map(nav => {
+            return (
+              <Link key={nav.name} href={nav.href} className="text-gray-800 text-sm font-semibold hover:text-orange-400 mb-1">{nav.name}</Link>
+            )
+          })}
+         
+           <div className="flex justify-between items-center border-t-2 pt-2">
             <Link href="#" className="text-gray-800 text-sm font-semibold hover:text-orange-400 mr-4">Sign in</Link>
             <Link href="#" className="text-gray-800 text-sm font-semibold border px-4 py-1 rounded-lg hover:text-orange-400 hover:border-purple-600">Sign up</Link>
           </div>
