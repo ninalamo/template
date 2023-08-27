@@ -30,7 +30,9 @@ export default function Nav(){
     <div className="container mx-auto px-4">
       <div className="flex items-center justify-between pt-4">
         <div>
-          <span className="font-bold">SonicLynx</span>
+          <Link href='/'>
+            <span className="font-bold">SonicLynx</span>
+          </Link>
         </div>
 
         <div className="hidden sm:flex sm:items-center">

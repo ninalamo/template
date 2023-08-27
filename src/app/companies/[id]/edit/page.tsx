@@ -39,7 +39,7 @@ const formSchema = z.object({
 })
 
 
-export default function CreateCompany() {
+export default function EditCompany() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -56,7 +56,7 @@ export default function CreateCompany() {
 
   return (
     <div>
-        <h1>Create Company</h1>
+        <h1>Edit Company</h1>
 
         <div className='flex flex-row'>
           <div className='basis-4/6 bg-white p-8'>

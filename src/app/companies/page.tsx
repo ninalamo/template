@@ -2,6 +2,7 @@
 
 import SortableTable from "@/components/SortableTable"
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Company } from "@/models/Company";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
@@ -14,61 +15,61 @@ export default function Companies(){
         id: 1,
         name: "Cognizant",
         industry: "Outsourcing",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, inventore quisquam! Illo facilis nemo corporis aliquid perferendis obcaecati libero facere!"
+        subscription: "Level 1"
       },
       {
         id: 2,
         name: "ABC Company",
         industry: "Outsourcing",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, inventore quisquam! Illo facilis nemo corporis aliquid perferendis obcaecati libero facere!"
+        subscription: "Level 1"
       },
       {
         id: 3,
         name: "SM Corp",
         industry: "Outsourcing",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, inventore quisquam! Illo facilis nemo corporis aliquid perferendis obcaecati libero facere!"
+        subscription: "Level 1"
       },
       {
         id: 4,
         name: "Ayala Group",
         industry: "Outsourcing",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, inventore quisquam! Illo facilis nemo corporis aliquid perferendis obcaecati libero facere!"
+        subscription: "Level 1"
       },
       {
         id: 5,
         name: "Diversify",
         industry: "Outsourcing",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, inventore quisquam! Illo facilis nemo corporis aliquid perferendis obcaecati libero facere!"
+        subscription: "Level 1"
       },
       {
         id: 6,
         name: "J&J",
         industry: "Outsourcing",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, inventore quisquam! Illo facilis nemo corporis aliquid perferendis obcaecati libero facere!"
+        subscription: "Level 1"
       },
       {
         id: 7,
         name: "KMC",
         industry: "Outsourcing",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, inventore quisquam! Illo facilis nemo corporis aliquid perferendis obcaecati libero facere!"
+        subscription: "Level 1"
       },
       {
         id: 8,
         name: "Arla",
         industry: "Outsourcing",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, inventore quisquam! Illo facilis nemo corporis aliquid perferendis obcaecati libero facere!"
+        subscription: "Level 1"
       },
       {
         id: 9,
         name: "Green Archers",
         industry: "Outsourcing",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, inventore quisquam! Illo facilis nemo corporis aliquid perferendis obcaecati libero facere!"
+        subscription: "Level 1"
       },
       {
         id: 10,
         name: "Jollibee Corp",
         industry: "Outsourcing",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, inventore quisquam! Illo facilis nemo corporis aliquid perferendis obcaecati libero facere!"
+        subscription: "Level 1"
       }
     ]
 
@@ -87,8 +88,36 @@ export default function Companies(){
           accessorKey: 'industry',
         },
         {
-          header: 'Description',
-          accessorKey: 'description',
+          header: 'Subscription',
+          accessorKey: 'subscription',
+        },{
+          id: "actions",
+          cell: ({row}) => {
+            const companyId = row.getValue('id')
+            return (
+              <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Open menu</span>
+                  ...
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuItem
+                  onClick={() => navigator.clipboard.writeText(row.getValue('id'))}
+                >
+                  Copy company ID
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => location.replace(`/companies/${row.getValue('id')}/edit`)}>
+                  Edit Company
+                </DropdownMenuItem>
+                <DropdownMenuItem>Remove Company</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            )
+          }
         }
       ]
     ,[]);
