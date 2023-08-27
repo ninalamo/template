@@ -15,11 +15,12 @@ export default function ExtMemberProfile() {
             first_name: "Chrisdan",
             last_name: "Evalla",
             phone: "+639121234567",
-            email: "chrisdanevalla@gmail.com"
+            email: "chrisdanevalla@gmail.com",
+            occupation: "Software Engineer"
         }
-        var vcard = "BEGIN:VCARD\nVERSION:4.0\nFN:" + contact.first_name + 
-        "\nFL:" + contact.last_name +
-        "\nTEL;TYPE=work,voice:" + contact.phone + 
+        var vcard = "BEGIN:VCARD\nVERSION:4.0\nFN:" + contact.first_name + " " + contact.last_name + 
+        "\nTEL;TYPE=cell:" + contact.phone + 
+        "\nTITLE:" + contact.occupation +
         "\nEMAIL:" + contact.email + "\nEND:VCARD";
 
         var blob = new Blob([vcard], { type: "text/vcard" });
