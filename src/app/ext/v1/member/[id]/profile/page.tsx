@@ -1,3 +1,4 @@
+'use client'
 import { Button } from '@/components/ui/button'
 import React from 'react'
 import DisplayItem from './DisplayItem'
@@ -8,6 +9,30 @@ import PinterestIcon from '@/app/icons/PinterestIcon'
 import TwitterIcon from '@/app/icons/TwitterIcon'
 
 export default function ExtMemberProfile() {
+
+    const saveContact = () => {
+        const contact = {
+            first_name: "Chrisdan",
+            last_name: "Evalla",
+            phone: "+639121234567",
+            email: "chrisdanevalla@gmail.com"
+        }
+        var vcard = "BEGIN:VCARD\nVERSION:4.0\nFN:" + contact.first_name + 
+        "\nFL:" + contact.last_name +
+        "\nTEL;TYPE=work,voice:" + contact.phone + 
+        "\nEMAIL:" + contact.email + "\nEND:VCARD";
+
+        var blob = new Blob([vcard], { type: "text/vcard" });
+        var url = URL.createObjectURL(blob);
+
+        const newLink = document.createElement('a');
+        newLink.download = contact.first_name + ".vcf";
+        newLink.textContent = contact.first_name + " " + contact.last_name;
+        newLink.href = url;
+        
+        newLink.click();
+    }
+
   return (
     <div>
         <div className='-mb-14 cover-photo h-56 w-full bg-gradient-to-r from-orange-400 to-orange-300 flex items-center text-slate-100 justify-center'>
@@ -93,7 +118,9 @@ export default function ExtMemberProfile() {
         </div>
 
         <div className='fixed bg-white shadow-lg left-0 right-0 bottom-0 w-full flex align-center justify-center'> 
-            <Button className='my-3 mr-3 w-40 min-w-max'>Save to Contact</Button>  <Button variant="secondary" className='w-40 my-3'>Share</Button>
+            <Button className='my-3 mr-3 w-40 min-w-max' onClick={() => saveContact()}>
+                Save to Contact
+            </Button>  <Button variant="secondary" className='w-40 my-3'>Share</Button>
         </div>
     </div>
   )
