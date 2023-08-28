@@ -15,6 +15,12 @@ steps:
     versionSpec: '18.x'
   displayName: 'Install Node.js'
 
+- task: Cache@2
+  displayName: 'Cache .next/cache'
+  inputs:
+    key: next | $(Agent.OS) | yarn.lock
+    path: '$(System.DefaultWorkingDirectory)/.next/cache'
+
 - script: |
     npm install
     npm run build
