@@ -21,8 +21,7 @@ steps:
   displayName: 'npm install and build'
 
 - task: SSH@0
-    displayName: Deploy to Server
-    inputs:
-      sshEndpoint: 'l4d2.gazo.win'
-      runOptions: 'commands'
-      commands: 'cp -R $(Build.ArtifactStagingDirectory)/* /home/ubuntu/bcard-ui.tuldok.dev'
+  inputs:
+    sshEndpoint: 'l4d2.gazo.win'
+    runOptions: 'commands'
+    commands: 'cp -R $(Build.ArtifactStagingDirectory)/* /home/ubuntu/bcard-ui.tuldok.dev'
