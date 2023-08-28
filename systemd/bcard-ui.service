@@ -7,6 +7,8 @@ Type=simple
 Restart=on-failure
 RestartSec=10
 WorkingDirectory=/home/ubuntu/bcard-ui.tuldok.dev
+ExecStartPre=/usr/bin/npm install
+ExecStartPre=/usr/bin/npm run build
 ExecStart=/usr/bin/npm run start
 
 [Install]
