@@ -15,8 +15,17 @@ steps:
     versionSpec: '18.x'
   displayName: 'Install Node.js'
 
+- task: Cache@2
+  displayName: 'Cache .next/cache'
 - task: SSH@0
   inputs:
+    key: next | $(Agent.OS)
+    path: '$(System.DefaultWorkingDirectory)/.next/cache'
+
+- script: |
+    npm install
+    npm run build
+  displayName: 'npm install and build'
     sshEndpoint: 'l4d2.gazo.win'
     runOptions: 'commands'
     commands: |
