@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 import { Toaster } from '@/components/ui/toaster'
+import { Checkbox } from '@/components/ui/checkbox'
 
 const formSchema = z.object({
   first_name: z.string().min(1, {
@@ -28,7 +29,24 @@ const formSchema = z.object({
   linkedin: z.string(),
   instagram: z.string(),
   pinterest: z.string(),
-  twitter: z.string()
+  twitter: z.string(),
+  identity_email: z.string().min(1, {
+    message: "Username is required"
+  }),
+  identity_password: z.string().min(6, {
+    message: "Password must be 6 characters minimum"
+  }),
+  identity_confirmPassword: z.string().min(6, {
+    message: "Password must be 6 characters minimum"
+  })
+}).superRefine(({identity_password, identity_confirmPassword }, ctx) => {
+  if (identity_confirmPassword !== identity_password) {
+    console.log('Password did not match');
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "The passwords did not match"
+    });
+  }
 })
 
 export default function ExtMemberForm({
@@ -68,7 +86,7 @@ export default function ExtMemberForm({
 
     
 
-    const values = {};
+    const[isEmailAsUsername, setEmailAsUsername] = useState(false);
 
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
@@ -84,7 +102,10 @@ export default function ExtMemberForm({
         linkedin: "",
         instagram: "",
         pinterest: "",
-        twitter: ""
+        twitter: "",
+        identity_email: "",
+        identity_password: "",
+        identity_confirmPassword: ""
       }
     })
 
@@ -102,7 +123,6 @@ export default function ExtMemberForm({
       form.setValue("pinterest", memberInfo.pinterest)
       form.setValue("twitter", memberInfo.twitter)
 
-
       console.log(params?.id);
 
       //fetch member's info on this line
@@ -116,11 +136,34 @@ export default function ExtMemberForm({
   
 
 
-    const { toast } = useToast()
-
-
+    const { toast } = useToast();
+  
     function onSubmit(values: z.infer<typeof formSchema>) {
-      console.log(values);
+      let request = {
+        client_id: memberInfo.client_id,
+        member_id: memberInfo.id,
+        first_name: values.first_name,
+        last_name: values.last_name,
+        middle_name: values.middle_name,
+        name_suffix: "",
+        phone_number: values.phone_number,
+        email: values.email,
+        address: values.address,
+        occupation: values.occupation,
+        facebook: values.facebook,
+        linkedin: values.linkedin,
+        instagram: values.instagram,
+        pinterest: values.pinterest,
+        twitter: values.twitter,
+        card_key: memberInfo.card_key,
+        subscription_level: memberInfo.subscription_level,
+        identity: {
+          email: values.identity_email,
+          password: values.identity_password
+        }
+      }
+
+      console.log(request)
 
       toast({
         title: "Success!",
@@ -130,12 +173,15 @@ export default function ExtMemberForm({
 
     useEffect(() => {
       const subscription = form.watch((value, { name, type }) => {
-        if(name && value){
-          setMemberInfo({
-            ...memberInfo,
-            [name.toString()]: value[name]
-          })
+        if(name === 'identity_confirmPassword' && value !== form.getValues("identity_password")){
+          console.log("Password did not match");
         }
+        // if(name && value){
+        //   setMemberInfo({
+        //     ...memberInfo,
+        //     [name.toString()]: value[name]
+        //   })
+        // }
       });
 
       return () => subscription.unsubscribe();
@@ -221,12 +267,80 @@ export default function ExtMemberForm({
                           <FormItem className='mr-3'>
                             <FormLabel>Email Address</FormLabel>
                             <FormControl>
-                              <Input placeholder="sample@email.com" {...field} />
+                              <Input type='email' placeholder="sample@email.com" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
+
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md p-4">
+                        <FormControl>
+                          <Checkbox 
+                            checked={isEmailAsUsername}
+                            onCheckedChange={() => {
+                              setEmailAsUsername(!isEmailAsUsername);
+                              form.setValue("identity_email", form.getValues("email"))
+                            }}
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel>Set email as username?</FormLabel>
+                        </div>
+                      </FormItem>
+
+                      {!isEmailAsUsername?
+                        <FormField
+                          control={form.control}
+                          name="identity_email"
+                          render={({ field }) => (
+                            <FormItem className='mr-3'>
+                              <FormLabel>Username</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      : null}
+                    
+                    <div className='flex flex-row'>
+                      <FormField
+                          control={form.control}
+                          name="identity_password"
+                          render={({ field }) => (
+                            <FormItem className='basis-1/2 mr-3'>
+                              <FormLabel>Password</FormLabel>
+                              <FormControl>
+                                <Input type='password' {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                      <FormField
+                          control={form.control}
+                          name="identity_confirmPassword"
+                          render={({ field }) => (
+                            <FormItem className='basis-1/2 mr-3'>
+                              <FormLabel>Confirm Password</FormLabel>
+                              <FormControl>
+                                <Input type='password' {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      {form.getValues('identity_password') !== form.getValues('identity_confirmPassword')?
+                        <p className='text-red-600 font-bold'>
+                          Password and Confirm Password should match
+                        </p>
+                      : null}
+              
 
                     <FormField
                         control={form.control}

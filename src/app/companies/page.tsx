@@ -4,11 +4,21 @@ import SortableTable from "@/components/SortableTable"
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Company } from "@/models/Company";
+//import { getClients } from "@/services/ClientService";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 import { useMemo } from "react";
 
 export default function Companies(){
+    
+    // useEffect(() => {
+    //   const fetchClients = async () => {
+    //       const resp = await getClients(1, 10)
+    //       console.log('response', resp);
+    //   }
+
+    //   fetchClients();
+    // },[]);
 
     const companies = [
       {

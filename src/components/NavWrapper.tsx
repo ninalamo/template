@@ -14,7 +14,7 @@ export default function NavWrapper({
 
   return (
     <div>
-    {!pathName.includes('/ext/v1/member')? 
+    {!pathName.includes('/ext/v1/member') && !pathName.includes('log-in')? 
         <>
           <Nav />
           <div className="container mx-auto px-4 py-4 mt-3">
