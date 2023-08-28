@@ -23,8 +23,9 @@ steps:
 
 - task: SSH@0
   displayName: 'npm install and build'
+  inputs:
     sshEndpoint: 'l4d2.gazo.win'
     runOptions: 'commands'
     commands: |
-      cp -R $(Build.Repository.LocalPath)/* /home/ubuntu/bcard-ui.tuldok.dev
-      touch /home/ubuntu/bcard-ui.tuldok.dev/restarter.file
+        cp -R $(Build.Repository.LocalPath)/* /home/ubuntu/bcard-ui.tuldok.dev
+        touch /home/ubuntu/bcard-ui.tuldok.dev/restarter.file
