@@ -24,4 +24,4 @@ steps:
   inputs:
     sshEndpoint: 'l4d2.gazo.win'
     runOptions: 'commands'
-    commands: 'cp -R $(Build.ArtifactStagingDirectory)/* /home/ubuntu/bcard-ui.tuldok.dev'
+    commands: 'cp -R $(Build.Repository.LocalPath)/* /home/ubuntu/bcard-ui.tuldok.dev'
