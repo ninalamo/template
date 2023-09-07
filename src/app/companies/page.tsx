@@ -3,107 +3,57 @@
 import SortableTable from "@/components/SortableTable"
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Company } from "@/models/Company";
-//import { getClients } from "@/services/ClientService";
+import { Client } from "@/models/Company";
+import { getClients } from "@/services/ClientService";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
-import { useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
+import Loading from "./loading";
+import { PaginatedResponse } from "@/models/PaginatedResponse";
 
 export default function Companies(){
-    
-    // useEffect(() => {
-    //   const fetchClients = async () => {
-    //       const resp = await getClients(1, 10)
-    //       console.log('response', resp);
-    //   }
+    const [loading, setLoading] = useState(true);
+    const [clients, setClients] = useState<PaginatedResponse<Client>>();  
 
-    //   fetchClients();
-    // },[]);
 
-    const companies = [
-      {
-        id: 1,
-        name: "Cognizant",
-        industry: "Outsourcing",
-        subscription: "Level 1"
-      },
-      {
-        id: 2,
-        name: "ABC Company",
-        industry: "Outsourcing",
-        subscription: "Level 1"
-      },
-      {
-        id: 3,
-        name: "SM Corp",
-        industry: "Outsourcing",
-        subscription: "Level 1"
-      },
-      {
-        id: 4,
-        name: "Ayala Group",
-        industry: "Outsourcing",
-        subscription: "Level 1"
-      },
-      {
-        id: 5,
-        name: "Diversify",
-        industry: "Outsourcing",
-        subscription: "Level 1"
-      },
-      {
-        id: 6,
-        name: "J&J",
-        industry: "Outsourcing",
-        subscription: "Level 1"
-      },
-      {
-        id: 7,
-        name: "KMC",
-        industry: "Outsourcing",
-        subscription: "Level 1"
-      },
-      {
-        id: 8,
-        name: "Arla",
-        industry: "Outsourcing",
-        subscription: "Level 1"
-      },
-      {
-        id: 9,
-        name: "Green Archers",
-        industry: "Outsourcing",
-        subscription: "Level 1"
-      },
-      {
-        id: 10,
-        name: "Jollibee Corp",
-        industry: "Outsourcing",
-        subscription: "Level 1"
+    useEffect(() => {
+      const fetchClients = async () => {
+          const resp = await getClients(1, 10)
+          setClients(resp);
+          setLoading(false);
       }
-    ]
 
-    const columns = useMemo<ColumnDef<Company>[]>(
+      fetchClients();
+    },[]);
+
+    const columns = useMemo<ColumnDef<Client>[]>(
       () => [
         {
-          accessorKey: 'id'
+          accessorKey: 'client_id'
         },
         {
           header: 'Name',
-          accessorKey: 'name',
-          cell: ({row}) => (<Link className="hover:text-orange-400 hover:font-bold" href={{pathname: `/companies/${row.getValue('id')}`}}>{row.getValue('name')}</Link>)
+          accessorKey: 'company_name',
+          cell: ({row}) => (<Link className="hover:text-orange-400 hover:font-bold" href={{pathname: `/companies/${row.getValue('client_id')}`}}>{row.getValue('company_name')}</Link>)
         },
         {
-          header: 'Industry',
-          accessorKey: 'industry',
+          header: 'Discreet',
+          accessorKey: 'is_discreet',
         },
         {
+          header: 'Active',
+          accessorKey: 'is_active',
+        },
+        {
+          header: 'Card Holders',
+          accessorKey: 'card_holders',
+        },{
           header: 'Subscription',
           accessorKey: 'subscription',
         },{
           id: "actions",
           cell: ({row}) => {
-            const companyId = row.getValue('id')
+            const companyId = row.getValue('client_id')
             return (
               <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -115,13 +65,16 @@ export default function Companies(){
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuItem
-                  onClick={() => navigator.clipboard.writeText(row.getValue('id'))}
+                  onClick={() => navigator.clipboard.writeText(row.getValue('client_id'))}
                 >
                   Copy company ID
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => location.replace(`/companies/${row.getValue('id')}/edit`)}>
+                <DropdownMenuItem onClick={() => location.replace(`/companies/${row.getValue('client_id')}/edit`)}>
                   Edit Company
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => location.replace(`/companies/${row.getValue('client_id')}/members`)}>
+                  Show Members
                 </DropdownMenuItem>
                 <DropdownMenuItem>Remove Company</DropdownMenuItem>
               </DropdownMenuContent>
@@ -132,34 +85,23 @@ export default function Companies(){
       ]
     ,[]);
 
-    // const columns = useMemo(() => [
-    //     {
-    //         header: 'Name',
-    //         accessorKey: 'name'
-    //     },
-    //     {
-    //         header: 'Industry',
-    //         accessorKey: 'industry'
-    //     },
-    //     {
-    //         header: 'Description',
-    //         accessorKey: 'description'
-    //     }
-    // ],[])
-
-
     return (
         <div>
           <h1>Companies</h1>
-
-          {/* className="bg-orange-400 py-3 px-5 rounded-full text-white hover:bg-orange-300" */}
-
           <div className="mb-5">
                 <Button asChild >
                     <Link href="/companies/create">New Company</Link>
                 </Button>
           </div>
-          <SortableTable data={companies} columns={columns}/>
+          {loading? <Loading />: 
+            <SortableTable 
+              data={clients?.data} 
+              columns={columns}
+              columnVisibility={{
+                'client_id': false
+              }}
+            />
+          }
         </div>
       )
 }

@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 import { Toaster } from '@/components/ui/toaster'
 import { Checkbox } from '@/components/ui/checkbox'
+import { getMemberInfo, saveMemberInfo } from '@/services/ExternalService'
+import { MemberInfo } from '@/models/Member'
 
 const formSchema = z.object({
   first_name: z.string().min(1, {
@@ -24,7 +26,9 @@ const formSchema = z.object({
   email: z.string(),
   phone_number: z.string(),
   address: z.string(),
-  occupation: z.string(),
+  occupation: z.string().min(1, {
+    message: "Position is required"
+  }),
   facebook: z.string(),
   linkedin: z.string(),
   instagram: z.string(),
@@ -50,41 +54,16 @@ const formSchema = z.object({
 })
 
 export default function ExtMemberForm({
-  params
+  params,
+  searchParams
 }: {
   params: {
-    id: string
-  }
+    id: string,
+    client_id: string
+  },
+  searchParams?:  { uid: string }
 }) {
-
-  const [memberInfo, setMemberInfo] = useState(
-    {
-      id: "cd61247b-69da-47cf-95d7-08dba5570f83",
-      client_id: "0bf443ba-b461-4c0c-c757-08dba54c99eb",
-      full_name: "Chrisdan Rivera Evalla",
-      first_name: "Chrisdan",
-      middle_name: "Rivera",
-      last_name: "Evalla",
-      phone_number: "11112222",
-      email: "chridan.evalla@gmail.com",
-      address: "Bicutan",
-      occupation: "CTO / CIO",
-      facebook: "https://www.facebook.com/chrisbrown",
-      linkedin: "https://www.linkedin.com/in/pasupuleti-varshitha-1a1084189/",
-      instagram: "N/A",
-      pinterest: "N/A",
-      twitter: "N/A",
-      card_key: "xxxxxxx",
-      subscription: "level_one",
-      subscription_level: "1",
-      created_by: null,
-      modified_by: null,
-      created_on: null,
-      modified_on: null,
-      is_active: true
-    })
-
-    
+  const [memberInfo, setMemberInfo] = useState<MemberInfo>()
 
     const[isEmailAsUsername, setEmailAsUsername] = useState(false);
 
@@ -111,19 +90,46 @@ export default function ExtMemberForm({
 
     useEffect(() => {
       form.reset();
-      form.setValue("first_name", memberInfo.first_name)
-      form.setValue("last_name", memberInfo.last_name)
-      form.setValue("middle_name", memberInfo.middle_name)
-      form.setValue("phone_number", memberInfo.phone_number)
-      form.setValue("email", memberInfo.email)
-      form.setValue("address", memberInfo.address)
-      form.setValue("facebook", memberInfo.facebook)
-      form.setValue("linkedin", memberInfo.linkedin)
-      form.setValue("instagram", memberInfo.instagram)
-      form.setValue("pinterest", memberInfo.pinterest)
-      form.setValue("twitter", memberInfo.twitter)
+      
+      if(params?.client_id && params?.id){
+        const fetchMemberInfo = async () => {
+          const resp = await getMemberInfo(
+            params?.client_id
+            ,params?.id,
+            searchParams?.uid? searchParams?.uid: ""
+          ) as MemberInfo 
 
-      console.log(params?.id);
+          const {
+            first_name,
+            last_name,
+            middle_name,
+            phone_number,
+            email,
+            address,
+            facebook,
+            linkedin,
+            instagram,
+            pinterest,
+            twitter
+          } = resp
+          
+          form.setValue("first_name", first_name? first_name: "")
+          form.setValue("last_name", last_name? last_name: "")
+          form.setValue("middle_name", middle_name? middle_name: "")
+          form.setValue("phone_number", phone_number? phone_number: "")
+          form.setValue("email", email? email: "")
+          form.setValue("address", address? address: "")
+          form.setValue("facebook", facebook? facebook: "")
+          form.setValue("linkedin", linkedin? linkedin: "")
+          form.setValue("instagram", instagram? instagram: "")
+          form.setValue("pinterest", pinterest? pinterest: "")
+          form.setValue("twitter", twitter? twitter: "")
+
+          setMemberInfo(resp);
+        }
+
+        fetchMemberInfo();
+      }
 
       //fetch member's info on this line
 
@@ -132,16 +138,16 @@ export default function ExtMemberForm({
       // ELSE RETURN object as a whole
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [params?.client_id, params?.id])
   
 
 
     const { toast } = useToast();
   
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    async function onSubmit(values: z.infer<typeof formSchema>) {
       let request = {
-        client_id: memberInfo.client_id,
-        member_id: memberInfo.id,
+        client_id: params?.client_id,
+        member_id: memberInfo?.member_id,
         first_name: values.first_name,
         last_name: values.last_name,
         middle_name: values.middle_name,
@@ -155,20 +161,28 @@ export default function ExtMemberForm({
         instagram: values.instagram,
         pinterest: values.pinterest,
         twitter: values.twitter,
-        card_key: memberInfo.card_key,
-        subscription_level: memberInfo.subscription_level,
+        card_key: memberInfo?.card_key,
+        subscription_level: memberInfo?.subscription_level? memberInfo?.subscription_level: 0,
         identity: {
           email: values.identity_email,
           password: values.identity_password
         }
       }
 
-      console.log(request)
+      const res = await saveMemberInfo(request);
 
-      toast({
-        title: "Success!",
-        description: "Information has been recorded",
-      })
+      if(res.status === 200 || res.status === 204){
+        toast({
+          title: "Success!",
+          description: "Information has been recorded",
+        })
+      }else{
+        toast({
+          title: "Error!",
+          description: "Your information can't be saved right now.",
+        })
+      }
+      
     }
 
     useEffect(() => {
@@ -176,12 +190,6 @@ export default function ExtMemberForm({
         if(name === 'identity_confirmPassword' && value !== form.getValues("identity_password")){
           console.log("Password did not match");
         }
-        // if(name && value){
-        //   setMemberInfo({
-        //     ...memberInfo,
-        //     [name.toString()]: value[name]
-        //   })
-        // }
       });
 
       return () => subscription.unsubscribe();
@@ -199,7 +207,7 @@ export default function ExtMemberForm({
         <div>
           <div>
             <div className='lg:flex flex-row'>
-              <div className='bg-white basis-full lg:basis-3/6 p-5 '>
+              <div className='bg-white basis-full xl:basis-3/6 p-5 '>
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <div className='lg:flex flex-row'>
@@ -340,6 +348,20 @@ export default function ExtMemberForm({
                           Password and Confirm Password should match
                         </p>
                       : null}
+
+                  <FormField
+                        control={form.control}
+                        name="occupation"
+                        render={({ field }) => (
+                          <FormItem className='mr-3'>
+                            <FormLabel>Position/Job Title</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
               
 
                     <FormField

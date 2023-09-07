@@ -47,7 +47,7 @@ export default function Login(){
                         name="email"
                         render={({field}) => (
                             <FormItem>
-                              <FormLabel>Username</FormLabel>
+                              <FormLabel>Email Address</FormLabel>
                               <FormControl>
                                 <Input placeholder="Username" {...field}/>
                               </FormControl>

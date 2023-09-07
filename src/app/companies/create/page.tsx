@@ -59,7 +59,7 @@ export default function CreateCompany() {
         <h1>Create Company</h1>
 
         <div className='flex flex-row'>
-          <div className='basis-4/6 bg-white p-8'>
+          <div className='basis-full lg:basis-4/6 bg-white p-8'>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <FormField

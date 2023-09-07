@@ -59,7 +59,7 @@ export default function EditCompany() {
         <h1>Edit Company</h1>
 
         <div className='flex flex-row'>
-          <div className='basis-4/6 bg-white p-8'>
+          <div className='basis-full md:basis-4/6 bg-white p-8'>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <FormField

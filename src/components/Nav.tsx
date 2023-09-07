@@ -11,14 +11,6 @@ const navigationLinks = [
   {
     name: "Companies",
     href: "/companies"
-  },
-  {
-    name: "People",
-    href: "/people"
-  },
-  {
-    name: "Subscriptions",
-    href: "/subscriptions"
   }
 ]
 
@@ -49,8 +41,8 @@ export default function Nav(){
 
         {/* Auth */}
         <div className="hidden sm:flex sm:items-center">
-          <Link href="#" className="text-gray-800 text-sm font-semibold hover:text-orange-400 mr-4">Sign in</Link>
-          <Link href="#" className="text-gray-800 text-sm font-semibold border px-4 py-2 rounded-lg hover:text-orange-400 hover:border-purple-600">Sign up</Link>
+          <Link href="/log-in" className="text-gray-800 text-sm font-semibold hover:text-orange-400 mr-4">Sign in</Link>
+          <Link href="/register" className="text-gray-800 text-sm font-semibold border px-4 py-2 rounded-lg hover:text-orange-400 hover:border-purple-600">Sign up</Link>
         </div>
 
         <div className="sm:hidden cursor-pointer">
@@ -69,8 +61,8 @@ export default function Nav(){
           })}
          
            <div className="flex justify-between items-center border-t-2 pt-2">
-            <Link href="#" className="text-gray-800 text-sm font-semibold hover:text-orange-400 mr-4">Sign in</Link>
-            <Link href="#" className="text-gray-800 text-sm font-semibold border px-4 py-1 rounded-lg hover:text-orange-400 hover:border-purple-600">Sign up</Link>
+            <Link href="/log-in" className="text-gray-800 text-sm font-semibold hover:text-orange-400 mr-4">Sign in</Link>
+            <Link href="register" className="text-gray-800 text-sm font-semibold border px-4 py-1 rounded-lg hover:text-orange-400 hover:border-purple-600">Sign up</Link>
           </div>
         </div>
       </div>
