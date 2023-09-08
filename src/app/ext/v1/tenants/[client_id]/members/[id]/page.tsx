@@ -12,6 +12,8 @@ import { Toaster } from '@/components/ui/toaster'
 import { Checkbox } from '@/components/ui/checkbox'
 import { getMemberInfo, saveMemberInfo } from '@/services/ExternalService'
 import { MemberInfo } from '@/models/Member'
+import { redirect } from 'next/navigation'
+import { RedirectType } from 'next/dist/client/components/redirect'
 
 const formSchema = z.object({
   first_name: z.string().min(1, {
@@ -63,7 +65,7 @@ export default function ExtMemberForm({
   },
   searchParams?:  { uid: string }
 }) {
-  const [memberInfo, setMemberInfo] = useState<MemberInfo>()
+    const [cardKey, setCardKey] = useState<string>()
 
     const[isEmailAsUsername, setEmailAsUsername] = useState(false);
 
@@ -92,43 +94,26 @@ export default function ExtMemberForm({
       form.reset();
       
       if(params?.client_id && params?.id){
-        const fetchMemberInfo = async () => {
-          const resp = await getMemberInfo(
-            params?.client_id
-            ,params?.id,
-            searchParams?.uid? searchParams?.uid: ""
-          ) as MemberInfo 
+        const initializeMember = async () => {
+          const resp = await getMemberInfo(params?.client_id, params?.id);
 
-          const {
-            first_name,
-            last_name,
-            middle_name,
-            phone_number,
-            email,
-            address,
-            facebook,
-            linkedin,
-            instagram,
-            pinterest,
-            twitter
-          } = resp
-          
-          form.setValue("first_name", first_name? first_name: "")
-          form.setValue("last_name", last_name? last_name: "")
-          form.setValue("middle_name", middle_name? middle_name: "")
-          form.setValue("phone_number", phone_number? phone_number: "")
-          form.setValue("email", email? email: "")
-          form.setValue("address", address? address: "")
-          form.setValue("facebook", facebook? facebook: "")
-          form.setValue("linkedin", linkedin? linkedin: "")
-          form.setValue("instagram", instagram? instagram: "")
-          form.setValue("pinterest", pinterest? pinterest: "")
-          form.setValue("twitter", twitter? twitter: "")
+          form.setValue("first_name", resp? resp.firstName: "")
+          form.setValue("last_name", resp? resp.lastName: "")
+          form.setValue("middle_name", resp? resp.middleName: "")
+          form.setValue("phone_number", resp? resp.phoneNumber: "")
+          form.setValue("email", resp? resp.email: "")
+          form.setValue("address", resp? resp.address: "")
+          form.setValue("facebook", resp? resp.facebook: "")
+          form.setValue("linkedin", resp? resp.linkedIn: "")
+          form.setValue("instagram", resp? resp.instagram: "")
+          form.setValue("pinterest", resp? resp.pinterest: "")
+          form.setValue("twitter", resp? resp.twitter: "")
+          form.setValue("occupation", resp? resp.occupation: "")
 
-          setMemberInfo(resp);
+          setCardKey(params?.id);
         }
 
-        fetchMemberInfo();
+        initializeMember();
       }
 
       //fetch member's info on this line
@@ -147,7 +132,6 @@ export default function ExtMemberForm({
     async function onSubmit(values: z.infer<typeof formSchema>) {
       let request = {
         client_id: params?.client_id,
-        member_id: memberInfo?.member_id,
         first_name: values.first_name,
         last_name: values.last_name,
         middle_name: values.middle_name,
@@ -161,8 +145,8 @@ export default function ExtMemberForm({
         instagram: values.instagram,
         pinterest: values.pinterest,
         twitter: values.twitter,
-        card_key: memberInfo?.card_key,
-        subscription_level: memberInfo?.subscription_level? memberInfo?.subscription_level: 0,
+        card_key: cardKey,
+        subscription_level: 0,
         identity: {
           email: values.identity_email,
           password: values.identity_password
@@ -171,15 +155,20 @@ export default function ExtMemberForm({
 
       const res = await saveMemberInfo(request);
 
-      if(res.status === 200 || res.status === 204){
+      console.log('response', res);
+
+      if(res.status === 200 || res.status === 201 || res.status === 204){
         toast({
           title: "Success!",
           description: "Information has been recorded",
         })
+
+        location.replace(`/ext/v1/tenants/${request.client_id}/members/${request.card_key}/profile`);
+
       }else{
         toast({
           title: "Error!",
-          description: "Your information can't be saved right now.",
+          description: res? res.result: "Your information can't be saved right now.",
         })
       }
       
@@ -193,7 +182,7 @@ export default function ExtMemberForm({
       });
 
       return () => subscription.unsubscribe();
-    }, [form, memberInfo])
+    }, [form])
 
   return (
     <div className='container mx-auto px-4 py-4'>

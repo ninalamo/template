@@ -2,13 +2,12 @@ import { MemberRegister } from "@/models/Member";
 
 export async function getMemberInfo(
     client_id: string
-    ,member_id: string
     ,uid: string)
 {
-    const res = await fetch(`${process.env.apiBaseURI}/ext/v1/tenants/${client_id}/members/${member_id}/external?uid=${uid}`);
+    const res = await fetch(`${process.env.apiBaseURI}/ext/v1/tenants/${client_id}/members?uid=${uid}`);
 
     if(!res.ok){
-        throw new Error('Failed to fetch data');
+        return null;
     }
 
     return res.json();
@@ -36,13 +35,17 @@ export async function saveMemberInfo(data: MemberRegister)
 
     try{
         const res = await fetch(
-            `${process.env.apiBaseURI}/ext/v1/tenants/${data.client_id}/members/${data.member_id}/external`
+            `${process.env.apiBaseURI}/ext/v1/tenants/${data.client_id}/members?uid=${data.card_key}`
             ,settings);
 
+        console.log('unprocessed', res);
         const result = await res.json();
         console.log("Success:", result);
 
-        return result;
+        return {
+            status: res.status,
+            result
+        };
         
     }catch(e){
         throw new Error('Failed to save data');
