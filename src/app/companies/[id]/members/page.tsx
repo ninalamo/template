@@ -18,65 +18,7 @@ export default function ClientMembers({
   useEffect(() => {
     if(params?.id){
       //get members here
-      setMembers([
-        {
-          member_id: "1",
-          full_name: "Juan Dela Cruz",
-          first_name: "Juan",
-          middle_name: "Ildefonso",
-          last_name: "Dela Cruz",
-          name_suffix: "",
-          phone_number: "0909",
-          email: "juan@testgmail.com",
-          address: "Quezon City, Metro Manila",
-          occupation: "Accountant",
-          facebook: "",
-          linkedin: "",
-          instagram: "",
-          pinterest: "",
-          twitter: "",
-          card_key: "",
-          subscription_level: 1
-        },
-        {
-          member_id: "2",
-          full_name: "Maria Clara Dela Cruz",
-          first_name: "Juan",
-          middle_name: "Ildefonso",
-          last_name: "Dela Cruz",
-          name_suffix: "",
-          phone_number: "0909",
-          email: "juan@testgmail.com",
-          address: "Quezon City, Metro Manila",
-          occupation: "Accountant",
-          facebook: "",
-          linkedin: "",
-          instagram: "",
-          pinterest: "",
-          twitter: "",
-          card_key: "",
-          subscription_level: 1
-        },
-        {
-          member_id: "3",
-          full_name: "Pedro Dela Cruz",
-          first_name: "Juan",
-          middle_name: "Ildefonso",
-          last_name: "Dela Cruz",
-          name_suffix: "",
-          phone_number: "0909",
-          email: "juan@testgmail.com",
-          address: "Quezon City, Metro Manila",
-          occupation: "Accountant",
-          facebook: "",
-          linkedin: "",
-          instagram: "",
-          pinterest: "",
-          twitter: "",
-          card_key: "",
-          subscription_level: 1
-        }
-      ])
+      setMembers([])
 
       setTimeout(() => setLoading(false), 2000);
     }
