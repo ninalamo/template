@@ -73,7 +73,7 @@ export default function ExtMemberProfile({
                     {memberInfo?.occupation}
                 </p>
                 <p className='text-lg text-gray-400'>
-                    SonicLynx
+                    {memberInfo?.company}
                 </p>
             </div>
 

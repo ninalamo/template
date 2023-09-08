@@ -24,6 +24,7 @@ export interface MemberRegister{
 export interface MemberInfo{
     id: string,
     clientId: string,
+    company: string,
     fullName: string,
     firstName: string,
     lastName: string,
