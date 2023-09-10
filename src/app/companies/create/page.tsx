@@ -24,6 +24,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { addClient } from '@/services/ClientService'
+import { redirect } from 'next/navigation'
 
 const formSchema = z.object({
   company_name: z.string().min(2, {
@@ -50,8 +52,20 @@ export default function CreateCompany() {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    
+    const company =  {
+      company_name: values.company_name,
+      is_discreet : values.is_discreet,
+      subscription_level: parseInt (values.subscription),
+      industry : values.industry
+    };
+
+    const created = await addClient(company);
+    console.log(created);
+
+    location.replace("/companies");
+    
   }
 
   return (
@@ -96,7 +110,7 @@ export default function CreateCompany() {
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md p-4">
                       <FormControl>
-                        <Checkbox checked={field.value} onCheckedChange={field.onChange}/>
+                        <Checkbox checked={field.value} onCheckedChange={field.onChange} defaultValue={1}/>
                       </FormControl>
                       <div className="space-y-1 leading-none">
                         <FormLabel>Is Discreet</FormLabel>

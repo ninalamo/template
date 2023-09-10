@@ -1,3 +1,5 @@
+import { AddCompany, Company } from "@/models/Company";
+
 export async function getClients(pageNumber: number, pageSize: number){
     const res = await fetch(`${process.env.apiBaseURI}/api/Clients?pageSize=${pageSize}&pageNumber=${pageNumber}`);
 
@@ -17,4 +19,20 @@ export async function getClient(id: string)
     }
 
     return res.json();
+}
+
+export async function addClient(company: AddCompany){
+    var requestOptions = {
+        method: 'POST',
+        headers:{ 'Content-Type': 'application/json' },
+        body: JSON.stringify(company)
+    };
+
+    const res = await fetch(`${process.env.apiBaseURI}/api/Clients`, requestOptions);
+
+    if(!res.ok){
+        throw new Error()
+    }
+
+    res.json();
 }
