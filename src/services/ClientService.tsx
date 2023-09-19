@@ -8,10 +8,6 @@ export async function getClients(pageNumber: number, pageSize: number){
     }
    
     return (await res.json()).data[0];
-   
-    // console.log(result.data[0].data);
-
-    // return result.data[0].data;
 }
 
 export async function getClient(id: string)

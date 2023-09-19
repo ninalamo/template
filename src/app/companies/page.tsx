@@ -32,12 +32,12 @@ export default function Companies(){
     const columns = useMemo<ColumnDef<Client>[]>(
       () => [
         {
-          accessorKey: 'client_id'
+          accessorKey: 'id'
         },
         {
           header: 'Name',
           accessorKey: 'company_name',
-          cell: ({row}) => (<Link className="hover:text-orange-400 hover:font-bold" href={{pathname: `/companies/${row.getValue('client_id')}`}}>{row.getValue('company_name')}</Link>)
+          cell: ({row}) => (<Link className="hover:text-orange-400 hover:font-bold" href={{pathname: `/companies/${row.getValue('id')}`}}>{row.getValue('company_name')}</Link>)
         },
         {
           header: 'Industry',
@@ -53,7 +53,7 @@ export default function Companies(){
         },{
           id: "actions",
           cell: ({row}) => {
-            const companyId = row.getValue('client_id')
+            const companyId = row.getValue('id')
             return (
               <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -65,15 +65,15 @@ export default function Companies(){
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuItem
-                  onClick={() => navigator.clipboard.writeText(row.getValue('client_id'))}
+                  onClick={() => navigator.clipboard.writeText(row.getValue('id'))}
                 >
                   Copy company ID
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => location.replace(`/companies/${row.getValue('client_id')}/edit`)}>
+                <DropdownMenuItem onClick={() => location.replace(`/companies/${row.getValue('id')}/edit`)}>
                   Edit Company
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => location.replace(`/companies/${row.getValue('client_id')}/members`)}>
+                <DropdownMenuItem onClick={() => location.replace(`/companies/${row.getValue('id')}/members`)}>
                   Show Members
                 </DropdownMenuItem>
                 <DropdownMenuItem>Remove Company</DropdownMenuItem>
@@ -98,7 +98,7 @@ export default function Companies(){
               data={clients?.data} 
               columns={columns}
               columnVisibility={{
-                'client_id': false
+                'id': false
               }}
             />
           }
