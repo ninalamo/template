@@ -39,16 +39,16 @@ const formSchema = z.object({
 })
 
 import { useRouter } from 'next/navigation';
-import { getClient } from '@/services/ClientService'
-import { Company } from '@/models/Company'
-export default function EditCompany( {
+import { editClient, getClient } from '@/services/ClientService'
+import { Company, EditCompany } from '@/models/Company'
+export default function EditCompany({
   params
-}:{
-    params: {
-        id: string,      
-    }
+}: {
+  params: {
+    id: string,
+  }
 }) {
-  
+
   const router = useRouter();
   const [company, setCompany] = useState<Company>();
 
@@ -63,62 +63,69 @@ export default function EditCompany( {
     },
   })
 
-  useEffect(() =>{
+  useEffect(() => {
     form.reset();
 
-    if(params?.id){
+    if (params?.id) {
       const fetchClient = async () => {
-          const resp = await getClient( params?.id);
-          
-          console.log(resp);
-          form.setValue("name", resp? resp.company_name: "")
-          form.setValue("industry", resp? resp.industry: "")
+        const resp = await getClient(params?.id);
+
+        console.log(resp);
+        form.setValue("name", resp ? resp.company_name : "")
+        form.setValue("industry", resp ? resp.industry : "")
       }
 
       fetchClient();
     }
 
-  },[params?.id]);
+  }, [params?.id]);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const client: EditCompany = {
+      company_name: values.name,
+      industry: values.industry,
+      id: params?.id
+    };
+    await editClient(client);
+    console.log(client);
+    location.replace("/companies");
   }
 
   return (
     <div>
-        <h1>Edit Company</h1>
+      <h1>Edit Company</h1>
 
-        <div className='flex flex-row'>
-          <div className='basis-full md:basis-4/6 bg-white p-8'>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Company Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="SonicLynx" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+      <div className='flex flex-row'>
+        <div className='basis-full md:basis-4/6 bg-white p-8'>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Company Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="SonicLynx" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <FormField
-                  control={form.control}
-                  name="industry"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Industry</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Outsourcing" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                control={form.control}
+                name="industry"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Industry</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Outsourcing" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               {/* <FormField
                   control={form.control}
@@ -159,12 +166,12 @@ export default function EditCompany( {
                     </FormItem>
                   )}
                 /> */}
-                <Button type="submit">Submit</Button>
-                <input className="text-gray-800 text-sm font-semibold  px-4 py-1 rounded-lg hover:text-orange-400 hover:border-purple-600" type="button" value="Back" onClick={() =>{location.replace("/companies")}} />
-              </form>
-            </Form>
-          </div>
+              <Button type="submit">Submit</Button>
+              <input className="text-gray-800 text-sm font-semibold  px-4 py-1 rounded-lg hover:text-orange-400 hover:border-purple-600" type="button" value="Back" onClick={() => { location.replace("/companies") }} />
+            </form>
+          </Form>
         </div>
+      </div>
     </div>
   )
 }
