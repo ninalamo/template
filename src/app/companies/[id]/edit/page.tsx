@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import * as z from 'zod'
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/select"
 
 const formSchema = z.object({
-  company_name: z.string().min(2, {
+  name: z.string().min(2, {
     message: "Company name must be at least 2 characters."
   }).max(50),
   industry: z.string({
@@ -38,17 +38,47 @@ const formSchema = z.object({
   subscription: z.string()
 })
 
+import { useRouter } from 'next/navigation';
+import { getClient } from '@/services/ClientService'
+import { Company } from '@/models/Company'
+export default function EditCompany( {
+  params
+}:{
+    params: {
+        id: string,      
+    }
+}) {
+  
+  const router = useRouter();
+  const [company, setCompany] = useState<Company>();
 
-export default function EditCompany() {
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      company_name: "",
+      name: "",
       industry: "",
       is_discreet: false,
       subscription: "0"
     },
   })
+
+  useEffect(() =>{
+    form.reset();
+
+    if(params?.id){
+      const fetchClient = async () => {
+          const resp = await getClient( params?.id);
+          
+          console.log(resp);
+          form.setValue("name", resp? resp.company_name: "")
+          form.setValue("industry", resp? resp.industry: "")
+      }
+
+      fetchClient();
+    }
+
+  },[params?.id]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values)
@@ -64,7 +94,7 @@ export default function EditCompany() {
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <FormField
                   control={form.control}
-                  name="company_name"
+                  name="name"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Company Name</FormLabel>
@@ -90,7 +120,7 @@ export default function EditCompany() {
                   )}
                 />
 
-              <FormField
+              {/* <FormField
                   control={form.control}
                   name="is_discreet"
                   render={({ field }) => (
@@ -128,8 +158,9 @@ export default function EditCompany() {
                         </Select>
                     </FormItem>
                   )}
-                />
+                /> */}
                 <Button type="submit">Submit</Button>
+                <input className="text-gray-800 text-sm font-semibold  px-4 py-1 rounded-lg hover:text-orange-400 hover:border-purple-600" type="button" value="Back" onClick={() =>{location.replace("/companies")}} />
               </form>
             </Form>
           </div>

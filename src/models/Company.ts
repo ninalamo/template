@@ -1,15 +1,13 @@
 export interface Company {
-    id: number,
+    id: string,
     name: string,
     industry: string,
-    subscription: string
+    subscriptions: number
 } 
   
 export interface AddCompany {
     company_name: string,
     industry: string,
-    is_discreet?: boolean,
-    subscription_level: number,
 } 
   
 

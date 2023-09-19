@@ -104,7 +104,7 @@ export default function CreateCompany() {
                   )}
                 />
 
-              <FormField
+              {/* <FormField
                   control={form.control}
                   name="is_discreet"
                   render={({ field }) => (
@@ -142,7 +142,7 @@ export default function CreateCompany() {
                         </Select>
                     </FormItem>
                   )}
-                />
+                /> */}
                 <Button type="submit">Submit</Button>
               </form>
             </Form>
