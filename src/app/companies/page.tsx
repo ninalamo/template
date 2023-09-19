@@ -11,7 +11,10 @@ import { useEffect, useState, useMemo } from "react";
 import Loading from "./loading";
 import { PaginatedResponse } from "@/models/PaginatedResponse";
 
+import { useRouter } from "next/navigation";
+
 export default function Companies(){
+    const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [clients, setClients] = useState<PaginatedResponse<Client>>();  
 
@@ -28,6 +31,8 @@ export default function Companies(){
 
       fetchClients();
     },[]);
+
+
 
     const columns = useMemo<ColumnDef<Client>[]>(
       () => [
@@ -53,7 +58,19 @@ export default function Companies(){
         },{
           id: "actions",
           cell: ({row}) => {
+
             const companyId = row.getValue('id')
+            const industry = row.getValue('industry')
+            const companyName = row.getValue('company_name');
+
+            const data = {
+               companyId,
+               industry,
+               companyName,
+            }
+
+          
+
             return (
               <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -64,13 +81,14 @@ export default function Companies(){
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                
                 <DropdownMenuItem
                   onClick={() => navigator.clipboard.writeText(row.getValue('id'))}
                 >
                   Copy company ID
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => location.replace(`/companies/${row.getValue('id')}/edit`)}>
+                <DropdownMenuItem onClick={() => router.push(`/companies/${row.getValue('id')}/edit`)}>
                   Edit Company
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => location.replace(`/companies/${row.getValue('id')}/members`)}>
