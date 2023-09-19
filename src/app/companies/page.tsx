@@ -19,6 +19,9 @@ export default function Companies(){
     useEffect(() => {
       const fetchClients = async () => {
           const resp = await getClients(1, 10)
+
+          console.log(resp.data)
+          console.log(resp.page_size);
           setClients(resp);
           setLoading(false);
       }
@@ -37,19 +40,16 @@ export default function Companies(){
           cell: ({row}) => (<Link className="hover:text-orange-400 hover:font-bold" href={{pathname: `/companies/${row.getValue('client_id')}`}}>{row.getValue('company_name')}</Link>)
         },
         {
-          header: 'Discreet',
-          accessorKey: 'is_discreet',
+          header: 'Industry',
+          accessorKey: 'industry',
         },
         {
           header: 'Active',
           accessorKey: 'is_active',
         },
         {
-          header: 'Card Holders',
-          accessorKey: 'card_holders',
-        },{
-          header: 'Subscription',
-          accessorKey: 'subscription',
+          header: 'Subscriptions',
+          accessorKey: 'subscriptions',
         },{
           id: "actions",
           cell: ({row}) => {

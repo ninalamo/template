@@ -6,8 +6,12 @@ export async function getClients(pageNumber: number, pageSize: number){
     if(!res.ok){
         throw new Error('Failed to fetch data');
     }
+   
+    return (await res.json()).data[0];
+   
+    // console.log(result.data[0].data);
 
-    return res.json();
+    // return result.data[0].data;
 }
 
 export async function getClient(id: string)
