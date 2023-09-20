@@ -8,8 +8,13 @@ export interface Company {
 export interface AddCompany {
     company_name: string,
     industry: string,
-} 
-  
+}
+
+export interface EditCompany {
+    company_name: string,
+    industry: string,
+    id: string
+}
 
 export interface Client {
     client_id: string,
