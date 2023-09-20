@@ -14,6 +14,7 @@ export interface AddCompany {
 export interface Client {
     client_id: string,
     company_name: string,
+    industry: string,
     is_discreet: boolean,
     is_active: boolean,
     card_holders: number,

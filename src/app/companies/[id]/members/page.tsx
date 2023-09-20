@@ -1,6 +1,8 @@
 'use client'
 import SortableTable from '@/components/SortableTable';
 import { MemberInfo } from '@/models/Member';
+import { PaginatedResponse } from '@/models/PaginatedResponse';
+import { getClientMembers } from '@/services/ClientService';
 import { ColumnDef } from '@tanstack/react-table';
 import React, { useEffect, useMemo, useState } from 'react'
 
@@ -13,14 +15,19 @@ export default function ClientMembers({
 }) {
 
   const [loading, setLoading] = useState(true);
-  const [members, setMembers] = useState<MemberInfo[]>();
+  const [members, setMembers] = useState<PaginatedResponse<MemberInfo>>();
 
   useEffect(() => {
     if(params?.id){
-      //get members here
-      setMembers([])
+      const fetchClientMembers = async () => {
+        const resp = await getClientMembers(params?.id);
 
-      setTimeout(() => setLoading(false), 2000);
+        console.log(resp);
+        setMembers(resp);
+        setLoading(false);
+      }
+
+      fetchClientMembers();
     }
   }, [params?.id]);
 
@@ -53,7 +60,7 @@ export default function ClientMembers({
           <h1>Members</h1>
 
           <SortableTable 
-              data={members} 
+              data={members?.data} 
               columns={columns}
               columnVisibility={{
                 'member_id': false

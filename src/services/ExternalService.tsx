@@ -13,15 +13,6 @@ export async function getMemberInfo(
     return res.json();
 }
 
-
-
-
-
-
-
-
-
-
 export async function saveMemberInfo(data: MemberRegister)
 {
     const settings = {

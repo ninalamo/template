@@ -36,3 +36,14 @@ export async function addClient(company: AddCompany){
 
     res.json();
 }
+
+
+export async function getClientMembers(id: string){
+    const res = await fetch(`${process.env.apiBaseURI}/api/clients/${id}/members`);
+
+    if(!res.ok){
+        throw new Error('Failed to fetch data');
+    }
+
+    return (await res.json()).data[0];
+}

@@ -1,7 +1,9 @@
 'use client'
 
+import { ClientSubscription } from '@/models/ClientSubscription';
 import { Client } from '@/models/Company';
 import { getClient } from '@/services/ClientService';
+import { getClientSubscriptions } from '@/services/SubscriptionService';
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 
@@ -14,6 +16,7 @@ export default function CompanyProfile({
   }) {
     const [loading, setLoading] = useState(true);
     const [client, setClient] = useState<Client>();
+    const [clientSubscriptions, setClientSubscriptions] = useState<ClientSubscription[]>();
 
 
     useEffect(() => {
@@ -21,6 +24,11 @@ export default function CompanyProfile({
             const fetchClient = async () => {
                 const resp = await getClient(params?.id);
                 setClient(resp);
+
+                const subs = await getClientSubscriptions(params?.id);
+
+                setClientSubscriptions(subs);
+
                 setLoading(false);
             }
       
@@ -29,14 +37,16 @@ export default function CompanyProfile({
 
     }, [params?.id])
 
+    console.log(clientSubscriptions)
+
   return (
     <div>
          {loading? <p>Please wait...</p> :
         <>
             <h1>{client?.company_name}</h1>
 
-            <div className='flex flex-row'>
-                <div className='bg-white p-5 basis-4/6 mr-5'>
+            <div className='lg:flex flex-row'>
+                <div className='bg-white p-5 basis-full mb-5 lg:basis-4/6 lg:mr-5'>
                     <div className='mb-5'>
                         <p className='font-bold'>Name</p>
                         <p>{client?.company_name}</p>
@@ -45,7 +55,7 @@ export default function CompanyProfile({
 
                     <div className='mb-5'>
                         <p className='font-bold'>Industry</p>
-                        <p>-</p>
+                        <p>{client?.industry}</p>
                     </div>
 
                     <div className='mb-5'>
@@ -63,44 +73,67 @@ export default function CompanyProfile({
                         <p>-</p>
                     </div>
                 </div>
-                <div className='bg-white p-5 basis-2/6'>
-                <div>
-                        <Image 
-                            className='mx-auto mb-5'
-                            src="/logo-placeholder.png" 
-                            alt="Company Logo" 
-                            width={200}
-                            height={40}
-                        />
-                </div>
+
+                <div className='bg-white p-5 basis-full lg:basis-2/6'>
+                    <div>
+                            <Image 
+                                className='mx-auto mb-5'
+                                src="/logo-placeholder.png" 
+                                alt="Company Logo" 
+                                width={200}
+                                height={40}
+                            />
+                    </div>
 
 
-                <h3 className='text-center font-bold mb-5'>
-                        Subscription Details
-                </h3>
+                    <h3 className='text-center font-bold mb-5'>
+                            Subscriptions
+                    </h3>
 
-                <table className='table-fixed w-full'>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <span className='font-bold'>Level</span>
-                                </td>
-                                <td className='w-2/4'>{client?.subscription_level}</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <span className='font-bold'>Details</span>
-                                </td>
-                                <td>{client?.subscription}</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <span className='font-bold'>No. of Cards</span>
-                                </td>
-                                <td>{client?.card_holders}</td>
-                            </tr>
-                        </tbody>
-                </table>
+                    {clientSubscriptions?.map((s,i) => {
+                        return (
+                            <table key={s.subscription_id} className='table-fixed w-full mb-5'>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <span className='font-bold'>Level</span>
+                                        </td>
+                                        <td className='w-2/4'>{s?.card_level}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span className='font-bold'>Details</span>
+                                        </td>
+                                        <td>{s?.description}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span className='font-bold'>Start Date</span>
+                                        </td>
+                                        <td>{new Date(s?.start_date).toDateString()}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span className='font-bold'>End Date</span>
+                                        </td>
+                                        <td>{new Date(s?.end_date).toDateString()}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span className='font-bold'>Status</span>
+                                        </td>
+                                        <td>{s?.status_description}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span className='font-bold'>Card Expiration (in Months)</span>
+                                        </td>
+                                        <td>{s?.card_expiry_in_months}</td>
+                                    </tr>
+                                </tbody>
+                        </table>
+                        )
+                    })}
                 </div>
             </div>
         </>

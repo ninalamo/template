@@ -91,7 +91,7 @@ export default function Companies(){
                 <DropdownMenuItem onClick={() => router.push(`/companies/${row.getValue('id')}/edit`)}>
                   Edit Company
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => location.replace(`/companies/${row.getValue('id')}/members`)}>
+                <DropdownMenuItem onClick={() => router.push(`/companies/${row.getValue('id')}/members`)}>
                   Show Members
                 </DropdownMenuItem>
                 <DropdownMenuItem>Remove Company</DropdownMenuItem>
