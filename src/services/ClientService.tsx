@@ -1,4 +1,4 @@
-import { AddCompany, Company, EditCompany } from "@/models/Company";
+import { AddCompany, EditCompany } from "@/models/Company";
 
 export async function getClients(pageNumber: number, pageSize: number) {
   const res = await fetch(
@@ -38,8 +38,20 @@ export async function addClient(company: AddCompany) {
     throw new Error();
   }
 
-  res.json();
+    res.json();
 }
+
+
+export async function getClientMembers(id: string){
+    const res = await fetch(`${process.env.apiBaseURI}/api/clients/${id}/members`);
+
+    if(!res.ok){
+        throw new Error('Failed to fetch data');
+    }
+
+    return (await res.json()).data[0];
+}
+
 
 export async function editClient(company: EditCompany) {
   var requestOptions = {

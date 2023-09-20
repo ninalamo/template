@@ -166,12 +166,12 @@ export default function EditCompany({
                     </FormItem>
                   )}
                 /> */}
-              <Button type="submit">Submit</Button>
-              <input className="text-gray-800 text-sm font-semibold  px-4 py-1 rounded-lg hover:text-orange-400 hover:border-purple-600" type="button" value="Back" onClick={() => { location.replace("/companies") }} />
-            </form>
-          </Form>
+                <Button type="submit">Submit</Button>
+                <input className="text-gray-800 text-sm font-semibold  px-4 py-1 rounded-lg hover:text-orange-400 hover:border-purple-600 cursor-pointer" type="button" value="Back" onClick={() =>{location.replace("/companies")}} />
+              </form>
+            </Form>
+          </div>
         </div>
       </div>
-    </div>
   )
 }
