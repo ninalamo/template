@@ -1,11 +1,25 @@
 'use client'
 
+import { Button } from '@/components/ui/button';
 import { ClientSubscription } from '@/models/ClientSubscription';
 import { Client } from '@/models/Company';
 import { getClient } from '@/services/ClientService';
 import { getClientSubscriptions } from '@/services/SubscriptionService';
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
+
+
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+  } from "@/components/ui/dialog"
+  
+
+
 
 export default function CompanyProfile({
     params
@@ -24,12 +38,12 @@ export default function CompanyProfile({
             const fetchClient = async () => {
                 const resp = await getClient(params?.id);
                 setClient(resp);
+                
+                setLoading(false);
 
                 const subs = await getClientSubscriptions(params?.id);
 
                 setClientSubscriptions(subs);
-
-                setLoading(false);
             }
       
             fetchClient();
@@ -74,7 +88,7 @@ export default function CompanyProfile({
                     </div>
                 </div>
 
-                <div className='bg-white p-5 basis-full lg:basis-2/6'>
+                <div className='bg-white p-5 basis-full mb-5 lg:basis-2/6'>
                     <div>
                             <Image 
                                 className='mx-auto mb-5'
@@ -84,58 +98,75 @@ export default function CompanyProfile({
                                 height={40}
                             />
                     </div>
-
-
-                    <h3 className='text-center font-bold mb-5'>
-                            Subscriptions
-                    </h3>
-
-                    {clientSubscriptions?.map((s,i) => {
-                        return (
-                            <table key={s.subscription_id} className='table-fixed w-full mb-5'>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <span className='font-bold'>Level</span>
-                                        </td>
-                                        <td className='w-2/4'>{s?.card_level}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <span className='font-bold'>Details</span>
-                                        </td>
-                                        <td>{s?.description}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <span className='font-bold'>Start Date</span>
-                                        </td>
-                                        <td>{new Date(s?.start_date).toDateString()}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <span className='font-bold'>End Date</span>
-                                        </td>
-                                        <td>{new Date(s?.end_date).toDateString()}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <span className='font-bold'>Status</span>
-                                        </td>
-                                        <td>{s?.status_description}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <span className='font-bold'>Card Expiration (in Months)</span>
-                                        </td>
-                                        <td>{s?.card_expiry_in_months}</td>
-                                    </tr>
-                                </tbody>
-                        </table>
-                        )
-                    })}
                 </div>
             </div>
+
+            <div className='bg-white p-5'>
+                <h2 className='font-bold mb-5 text-3xl'>
+                        Subscriptions
+                </h2>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button className='mb-3'>New Subscription</Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                        <DialogTitle>New Subscription</DialogTitle>
+                        <DialogDescription>
+                           Form here...
+                        </DialogDescription>
+                        </DialogHeader>
+                    </DialogContent>
+                </Dialog>
+
+                {clientSubscriptions?.map((s,i) => {
+                    return (
+                        <table key={s.subscription_id} className='table-fixed w-full mb-5'>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <span className='font-bold'>Level</span>
+                                    </td>
+                                    <td className='w-2/4'>{s?.card_level}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span className='font-bold'>Details</span>
+                                    </td>
+                                    <td>{s?.description}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span className='font-bold'>Start Date</span>
+                                    </td>
+                                    <td>{new Date(s?.start_date).toDateString()}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span className='font-bold'>End Date</span>
+                                    </td>
+                                    <td>{new Date(s?.end_date).toDateString()}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span className='font-bold'>Status</span>
+                                    </td>
+                                    <td>{s?.status_description}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span className='font-bold'>Card Expiration (in Months)</span>
+                                    </td>
+                                    <td>{s?.card_expiry_in_months}</td>
+                                </tr>
+                            </tbody>
+                    </table>
+                    )
+                })}
+            </div>
+
+            
+
         </>
         }
     </div>
