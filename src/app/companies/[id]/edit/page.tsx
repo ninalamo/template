@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import * as z from 'zod'
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -24,11 +24,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { addClient } from '@/services/ClientService'
-import { redirect } from 'next/navigation'
 
 const formSchema = z.object({
-  company_name: z.string().min(2, {
+  name: z.string().min(2, {
     message: "Company name must be at least 2 characters."
   }).max(50),
   industry: z.string({
@@ -40,69 +38,94 @@ const formSchema = z.object({
   subscription: z.string()
 })
 
+import { useRouter } from 'next/navigation';
+import { editClient, getClient } from '@/services/ClientService'
+import { Company, EditCompany } from '@/models/Company'
+export default function EditCompany({
+  params
+}: {
+  params: {
+    id: string,
+  }
+}) {
 
-export default function CreateCompany() {
+  const router = useRouter();
+  const [company, setCompany] = useState<Company>();
+
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      company_name: "",
+      name: "",
       industry: "",
       is_discreet: false,
       subscription: "0"
     },
   })
 
+  useEffect(() => {
+    form.reset();
+
+    if (params?.id) {
+      const fetchClient = async () => {
+        const resp = await getClient(params?.id);
+
+        console.log(resp);
+        form.setValue("name", resp ? resp.company_name : "")
+        form.setValue("industry", resp ? resp.industry : "")
+      }
+
+      fetchClient();
+    }
+
+  }, [params?.id]);
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    
-    const company =  {
-      company_name: values.company_name,
-      is_discreet : values.is_discreet,
-      subscription_level: parseInt (values.subscription),
-      industry : values.industry
+    const client: EditCompany = {
+      company_name: values.name,
+      industry: values.industry,
+      id: params?.id
     };
-
-    const created = await addClient(company);
-    console.log(created);
-
+    await editClient(client);
+    console.log(client);
     location.replace("/companies");
-    
   }
 
   return (
     <div>
-        <h1>Create Company</h1>
+      <h1>Edit Company</h1>
 
-        <div className='flex flex-row'>
-          <div className='basis-full lg:basis-4/6 bg-white p-8'>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                <FormField
-                  control={form.control}
-                  name="company_name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Company Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="SonicLynx" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+      <div className='flex flex-row'>
+        <div className='basis-full md:basis-4/6 bg-white p-8'>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Company Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="SonicLynx" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <FormField
-                  control={form.control}
-                  name="industry"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Industry</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Outsourcing" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                control={form.control}
+                name="industry"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Industry</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Outsourcing" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               {/* <FormField
                   control={form.control}
@@ -110,7 +133,7 @@ export default function CreateCompany() {
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md p-4">
                       <FormControl>
-                        <Checkbox checked={field.value} onCheckedChange={field.onChange} defaultValue={1}/>
+                        <Checkbox checked={field.value} onCheckedChange={field.onChange}/>
                       </FormControl>
                       <div className="space-y-1 leading-none">
                         <FormLabel>Is Discreet</FormLabel>
@@ -144,10 +167,11 @@ export default function CreateCompany() {
                   )}
                 /> */}
                 <Button type="submit">Submit</Button>
+                <input className="text-gray-800 text-sm font-semibold  px-4 py-1 rounded-lg hover:text-orange-400 hover:border-purple-600 cursor-pointer" type="button" value="Back" onClick={() =>{location.replace("/companies")}} />
               </form>
             </Form>
           </div>
         </div>
-    </div>
+      </div>
   )
 }

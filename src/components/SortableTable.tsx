@@ -2,16 +2,14 @@ import { useReactTable, getCoreRowModel, flexRender, SortingState, getSortedRowM
 import { useState } from "react";
 
 export default function SortableTable(
-    {data, columns}: {data: any, columns: any}
+    {data, columns, columnVisibility}: {data: any, columns: any, columnVisibility: any}
 ) {
     const [sorting, setSorting] = useState<SortingState>([])
 
     
     const table = useReactTable({data, columns, state:{
         sorting,
-        columnVisibility: {
-          'id': false
-        }
+        columnVisibility: columnVisibility
     }, 
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
@@ -19,7 +17,7 @@ export default function SortableTable(
 
   return (
     <div>
-        <table className="table-fixed items-center bg-transparent w-full border-collapse">
+        <table className="table-auto items-center bg-transparent w-full border-collapse">
         <thead>
           {table.getHeaderGroups().map(headerGroup => (
             <tr key={headerGroup.id}>
