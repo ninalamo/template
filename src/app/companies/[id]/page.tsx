@@ -17,6 +17,7 @@ import {
     DialogTitle,
     DialogTrigger,
   } from "@/components/ui/dialog"
+import SubscriptionForm from '@/components/forms/SubscriptionForm';
   
 
 
@@ -30,11 +31,13 @@ export default function CompanyProfile({
   }) {
     const [loading, setLoading] = useState(true);
     const [client, setClient] = useState<Client>();
+    const [clientId, setClientId] = useState<string>();
     const [clientSubscriptions, setClientSubscriptions] = useState<ClientSubscription[]>();
 
 
     useEffect(() => {
         if(params?.id){
+            setClientId(params?.id);
             const fetchClient = async () => {
                 const resp = await getClient(params?.id);
                 setClient(resp);
@@ -111,17 +114,15 @@ export default function CompanyProfile({
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[425px]">
                         <DialogHeader>
-                        <DialogTitle>New Subscription</DialogTitle>
-                        <DialogDescription>
-                           Form here...
-                        </DialogDescription>
+                        <DialogTitle className='mb-3'>New Subscription</DialogTitle>
+                        <SubscriptionForm clientId={clientId? clientId: ""} />
                         </DialogHeader>
                     </DialogContent>
                 </Dialog>
 
                 {clientSubscriptions?.map((s,i) => {
                     return (
-                        <table key={s.subscription_id} className='table-fixed w-full mb-5'>
+                        <table key={s.subscription_id} className='data-table table-fixed w-full mb-5'>
                             <tbody>
                                 <tr>
                                     <td>

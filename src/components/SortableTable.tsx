@@ -17,7 +17,7 @@ export default function SortableTable(
 
   return (
     <div>
-        <table className="table-auto items-center bg-transparent w-full border-collapse">
+        <table className="data-table table-auto items-center bg-transparent w-full border-collapse">
         <thead>
           {table.getHeaderGroups().map(headerGroup => (
             <tr key={headerGroup.id}>

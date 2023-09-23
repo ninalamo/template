@@ -1,3 +1,5 @@
+import { SubscriptionCreate } from "@/models/ClientSubscription";
+
 export async function getClientSubscriptions(clientId: string)
 {
     const res = await fetch(`${process.env.apiBaseURI}/api/clients/${clientId}/subscriptions`);
@@ -7,4 +9,20 @@ export async function getClientSubscriptions(clientId: string)
     }
 
     return (await res.json()).data[0];
+}
+
+export async function createClientSubscription(data: SubscriptionCreate)
+{
+    var requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      };
+    
+    const res = await fetch(
+    `${process.env.apiBaseURI}/api/Subscriptions`,
+    requestOptions
+    );
+    
+    res.json();
 }

@@ -13,3 +13,12 @@ export interface ClientSubscription{
     reminder_interval: number,
     payment_interval: number
 }
+
+export interface SubscriptionCreate
+{
+    client_id: string,
+    start_date: string,
+    end_date: string,
+    card_level: number,
+    number_of_month_to_expire: number
+}
