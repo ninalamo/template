@@ -169,7 +169,7 @@ export default function ExtMemberForm({
       }else{
         toast({
           title: "Error!",
-          description: res? res.result: "Your information can't be saved right now.",
+          description: res? res.result.error_message: "Your information can't be saved right now.",
         })
       }
       
