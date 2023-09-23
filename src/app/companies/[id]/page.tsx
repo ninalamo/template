@@ -18,6 +18,7 @@ import {
     DialogTrigger,
   } from "@/components/ui/dialog"
 import SubscriptionForm from '@/components/forms/SubscriptionForm';
+import GenerateCardForm from '@/components/forms/GenerateCardForm';
   
 
 
@@ -120,50 +121,49 @@ export default function CompanyProfile({
                     </DialogContent>
                 </Dialog>
 
-                {clientSubscriptions?.map((s,i) => {
-                    return (
-                        <table key={s.subscription_id} className='data-table table-fixed w-full mb-5'>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <span className='font-bold'>Level</span>
-                                    </td>
-                                    <td className='w-2/4'>{s?.card_level}</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span className='font-bold'>Details</span>
-                                    </td>
+                <div className='overflow-auto'>
+                    <table className='data-table table-fixed w-full mb-5 min-w-[1420px]'>
+                        <thead>
+                            <tr>
+                                <th>Level</th>
+                                <th>Desc</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Status</th>
+                                <th>Card Expiration (in months)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {clientSubscriptions?.map((s,i) => {
+                            return(
+                                <tr key={s.subscription_id}>
+                                    <td>{s?.card_level}</td>
                                     <td>{s?.description}</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span className='font-bold'>Start Date</span>
-                                    </td>
                                     <td>{new Date(s?.start_date).toDateString()}</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span className='font-bold'>End Date</span>
-                                    </td>
                                     <td>{new Date(s?.end_date).toDateString()}</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span className='font-bold'>Status</span>
-                                    </td>
                                     <td>{s?.status_description}</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span className='font-bold'>Card Expiration (in Months)</span>
-                                    </td>
                                     <td>{s?.card_expiry_in_months}</td>
+                                    <td>
+                                        <Dialog>
+                                            <DialogTrigger asChild>
+                                                <Button size="sm" variant="outline" className='text-xs'>Generate Cards</Button>
+                                            </DialogTrigger>
+                                            <DialogContent className="sm:max-w-[425px]">
+                                                <DialogHeader>
+                                                <DialogTitle className='mb-3'>Generate Cards</DialogTitle>
+                                                    <GenerateCardForm clientId={clientId? clientId: ""} subscriptionId={s.subscription_id} />
+                                                </DialogHeader>
+                                            </DialogContent>
+                                        </Dialog>
+                                    </td>
                                 </tr>
-                            </tbody>
+                            )
+                        })}
+                        </tbody>
                     </table>
-                    )
-                })}
+                </div>
+              
             </div>
 
             

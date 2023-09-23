@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Client } from "@/models/Company";
 import { getClients } from "@/services/ClientService";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, PaginationState } from "@tanstack/react-table";
 import Link from "next/link";
 import { useEffect, useState, useMemo } from "react";
 import Loading from "./loading";
@@ -18,19 +18,37 @@ export default function Companies(){
     const [loading, setLoading] = useState(true);
     const [clients, setClients] = useState<PaginatedResponse<Client>>();  
 
+    const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
+      pageIndex: 1,
+      pageSize: 10,
+    })
+  
+    const pagination = useMemo(
+      () => ({
+        pageIndex,
+        pageSize,
+      }),
+      [pageIndex, pageSize]
+    )
 
     useEffect(() => {
       const fetchClients = async () => {
-          const resp = await getClients(1, 10)
+          const resp = await getClients(pageIndex, pageSize)
 
           console.log(resp.data)
           console.log(resp.page_size);
+
+          setPagination({
+            pageIndex: resp?.page_number? resp?.page_number: 1,
+            pageSize: resp?.page_size? resp?.page_size: 10,
+          })
+
           setClients(resp);
           setLoading(false);
       }
 
       fetchClients();
-    },[]);
+    },[pageIndex, pageSize]);
 
 
 
@@ -114,6 +132,9 @@ export default function Companies(){
           {loading? <Loading />: 
             <SortableTable 
               data={clients?.data} 
+              page_count={clients?.total_count? clients?.total_count: 0}
+              pagination={pagination}
+              setPagination={setPagination}
               columns={columns}
               columnVisibility={{
                 'id': false

@@ -2,6 +2,7 @@ import { UserCredential } from "./UserCredential";
 
 export interface MemberRegister{
     client_id: string | undefined,
+    member_id: string | undefined,
     first_name: string,
     last_name: string,
     middle_name: string,
@@ -16,7 +17,7 @@ export interface MemberRegister{
     pinterest: string,
     twitter: string,
     card_key: string | undefined,
-    subscription_level: number,
+    subscription_id: string,
     identity: UserCredential
 }   
 

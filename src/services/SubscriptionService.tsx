@@ -31,3 +31,16 @@ export async function createClientSubscription(data: SubscriptionCreate)
         result
     }
 }
+
+
+export async function generateClientCards(clientId: string, subscriptionId: string, count: number)
+{
+    const res = await fetch(`${process.env.apiBaseURI}/ext/v1/tenants/${clientId}/subs/${subscriptionId}/generate/${count}`);
+
+    const result = await res.json();
+    
+    return {
+        status: res.status,
+        result
+    }
+}

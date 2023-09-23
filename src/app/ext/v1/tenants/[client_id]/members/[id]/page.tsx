@@ -22,9 +22,7 @@ const formSchema = z.object({
   last_name: z.string().min(1, {
     message: "Last Name is required"
   }),
-  middle_name: z.string().min(1, {
-    message: "Last Name is required"
-  }),
+  middle_name: z.string(),
   email: z.string(),
   phone_number: z.string(),
   address: z.string(),
@@ -95,7 +93,9 @@ export default function ExtMemberForm({
       
       if(params?.client_id && params?.id){
         const initializeMember = async () => {
-          const resp = await getMemberInfo(params?.client_id, params?.id);
+          const resp = await getMemberInfo(params?.client_id, params?.id, searchParams?.uid? searchParams?.uid: "");
+
+          console.log('member details', resp);
 
           form.setValue("first_name", resp? resp.firstName: "")
           form.setValue("last_name", resp? resp.lastName: "")
@@ -110,7 +110,7 @@ export default function ExtMemberForm({
           form.setValue("twitter", resp? resp.twitter: "")
           form.setValue("occupation", resp? resp.occupation: "")
 
-          setCardKey(params?.id);
+          setCardKey(searchParams?.uid);
         }
 
         initializeMember();
@@ -132,6 +132,7 @@ export default function ExtMemberForm({
     async function onSubmit(values: z.infer<typeof formSchema>) {
       let request = {
         client_id: params?.client_id,
+        member_id: params?.id,
         first_name: values.first_name,
         last_name: values.last_name,
         middle_name: values.middle_name,
@@ -146,7 +147,7 @@ export default function ExtMemberForm({
         pinterest: values.pinterest,
         twitter: values.twitter,
         card_key: cardKey,
-        subscription_level: 0,
+        subscription_id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         identity: {
           email: values.identity_email,
           password: values.identity_password
@@ -163,7 +164,7 @@ export default function ExtMemberForm({
           description: "Information has been recorded",
         })
 
-        location.replace(`/ext/v1/tenants/${request.client_id}/members/${request.card_key}/profile`);
+        location.replace(`/ext/v1/tenants/${request.client_id}/members/${request.member_id}/profile?uid=${cardKey}`);
 
       }else{
         toast({

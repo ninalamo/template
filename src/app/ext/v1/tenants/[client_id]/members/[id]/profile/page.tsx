@@ -11,25 +11,27 @@ import { MemberInfo } from '@/models/Member'
 import { getMemberInfo } from '@/services/ExternalService'
 
 export default function ExtMemberProfile({
-    params
+    params,
+    searchParams
 }:{
     params: {
         id: string,
         client_id: string
-    }
+    },
+    searchParams?:  { uid: string }
 }) {
     const [memberInfo, setMemberInfo] = useState<MemberInfo>();
 
     useEffect(() => {
         if(params?.client_id && params?.id){
             const fetchMember = async () => {
-                const resp = await getMemberInfo(params?.client_id, params?.id);
+                const resp = await getMemberInfo(params?.client_id, params?.id, searchParams?.uid? searchParams?.uid: "");
                 setMemberInfo(resp);
             }
 
             fetchMember();
         }
-    }, [params?.client_id, params?.id])
+    }, [params?.client_id, params?.id, searchParams?.uid])
 
     const saveContact = () => {
         const contact = {
@@ -58,7 +60,7 @@ export default function ExtMemberProfile({
   return (
     <div>
         <div className='-mb-14 cover-photo h-56 w-full bg-gradient-to-r from-orange-400 to-orange-300 flex items-center text-slate-100 justify-center'>
-            <h1 className='text-5xl opacity-20'>SonicLynx</h1>
+            <h1 className='text-5xl opacity-20'>{memberInfo?.company.toUpperCase()}</h1>
         </div>
         <div className='profile-picture select-none h-32 w-32 mx-auto border-solid border-white border-4 rounded-full bg-black flex items-center justify-center text-white text-4xl font-bold'>
             {memberInfo?.firstName[0].toUpperCase()}{memberInfo?.lastName[0].toUpperCase()}
