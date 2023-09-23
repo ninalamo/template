@@ -23,6 +23,11 @@ export async function createClientSubscription(data: SubscriptionCreate)
     `${process.env.apiBaseURI}/api/Subscriptions`,
     requestOptions
     );
+
+    const result = await res.json();
     
-    res.json();
+    return {
+        status: res.status,
+        result
+    }
 }

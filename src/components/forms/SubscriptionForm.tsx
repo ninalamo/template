@@ -27,6 +27,7 @@ import {
 import { toast } from "@/components/ui/use-toast"
 import { Input } from '../ui/input';
 import { createClientSubscription } from '@/services/SubscriptionService';
+import { Toaster } from '../ui/toaster';
 
 
 function formatDate(date: Date) {
@@ -84,11 +85,23 @@ export default function SubscriptionForm({
 
         const created = await createClientSubscription(request);
         console.log(created);
+
+        if(!created.result.is_success){
+            toast({
+                title: "Error!",
+                description: created? created.result.error_message: "Something went wrong.",
+            })
+
+            return;
+        }
+        
         location.reload();
+        
     }
 
     return (
        <div className='my-3'>
+            <Toaster />
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                     <FormField
