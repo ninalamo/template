@@ -34,6 +34,8 @@ export default function GenerateCardForm({
         const created = await generateClientCards(clientId, subscriptionId, values.count);
 
         console.log(created);
+
+        location.replace(`/companies/${clientId}/members`)
     }
 
 
