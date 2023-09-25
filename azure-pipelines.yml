@@ -15,13 +15,17 @@ steps:
     versionSpec: '18.x'
   displayName: 'Install Node.js'
 
-- task: Cache@2
-  displayName: 'Cache .next/cache'
-  inputs:
-    key: next | $(Agent.OS)
-    path: '$(System.DefaultWorkingDirectory)/.next/cache'
+# - task: Cache@2
+#   displayName: 'Cache .next/cache'
+#   inputs:
+#     key: next | $(Agent.OS)
+#     path: '$(System.DefaultWorkingDirectory)/.next/cache'
 
-- script: |
-    npm install
-    npm run build
+- task: SSH@0
   displayName: 'npm install and build'
+  inputs:
+    sshEndpoint: 'l4d2.gazo.win'
+    runOptions: 'commands'
+    commands: |
+        cp -R $(Build.Repository.LocalPath)/* /home/ubuntu/bcard-ui.tuldok.dev
+        touch /home/ubuntu/bcard-ui.tuldok.dev/restarter.file
