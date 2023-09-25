@@ -1,16 +1,17 @@
 import { MemberRegister } from "@/models/Member";
 
 export async function getMemberInfo(
-    client_id: string
-    ,uid: string)
+    client_id: string,
+    member_id: string,
+    uid: string)
 {
-    const res = await fetch(`${process.env.apiBaseURI}/ext/v1/tenants/${client_id}/members?uid=${uid}`);
+    const res = await fetch(`${process.env.apiBaseURI}/ext/v1/tenants/${client_id}/members/${member_id}?uid=${uid}`);
 
     if(!res.ok){
         return null;
     }
 
-    return res.json();
+    return (await res.json()).data[0][0]; 
 }
 
 export async function saveMemberInfo(data: MemberRegister)
@@ -26,7 +27,7 @@ export async function saveMemberInfo(data: MemberRegister)
 
     try{
         const res = await fetch(
-            `${process.env.apiBaseURI}/ext/v1/tenants/${data.client_id}/members?uid=${data.card_key}`
+            `${process.env.apiBaseURI}/ext/v1/tenants/${data.client_id}/members/${data.member_id}?uid=${data.card_key}`
             ,settings);
 
         console.log('unprocessed', res);

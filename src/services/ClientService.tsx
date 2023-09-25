@@ -42,8 +42,8 @@ export async function addClient(company: AddCompany) {
 }
 
 
-export async function getClientMembers(id: string){
-    const res = await fetch(`${process.env.apiBaseURI}/api/clients/${id}/members`);
+export async function getClientMembers(id: string, page_number: number, page_size: number){
+    const res = await fetch(`${process.env.apiBaseURI}/api/clients/${id}/members?pageNumber=${page_number}&pageSize=${page_size}`);
 
     if(!res.ok){
         throw new Error('Failed to fetch data');
