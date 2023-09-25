@@ -12,7 +12,7 @@ import { Toaster } from '@/components/ui/toaster'
 import { Checkbox } from '@/components/ui/checkbox'
 import { getMemberInfo, saveMemberInfo } from '@/services/ExternalService'
 import { MemberInfo } from '@/models/Member'
-import { redirect } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
 import { RedirectType } from 'next/dist/client/components/redirect'
 
 const formSchema = z.object({
@@ -63,9 +63,13 @@ export default function ExtMemberForm({
   },
   searchParams?:  { uid: string }
 }) {
+    const router = useRouter();
+
     const [cardKey, setCardKey] = useState<string>()
 
     const[isEmailAsUsername, setEmailAsUsername] = useState(false);
+
+    const [isLoading, setIsLoading] = useState(true);
 
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
@@ -97,6 +101,12 @@ export default function ExtMemberForm({
 
           console.log('member details', resp);
 
+          if(!resp){
+            if(!resp?.cardKey && resp?.cardKey.length > 0){
+              router.push(`/ext/v1/tenants/${params?.client_id}/members/${params?.id}/profile?uid=${searchParams?.uid}`)
+            }
+          }
+
           form.setValue("first_name", resp? resp.firstName: "")
           form.setValue("last_name", resp? resp.lastName: "")
           form.setValue("middle_name", resp? resp.middleName: "")
@@ -109,11 +119,14 @@ export default function ExtMemberForm({
           form.setValue("pinterest", resp? resp.pinterest: "")
           form.setValue("twitter", resp? resp.twitter: "")
           form.setValue("occupation", resp? resp.occupation: "")
-
-          setCardKey(searchParams?.uid);
+          
+          setCardKey(searchParams?.uid);      
+          
+          setIsLoading(false);
         }
 
         initializeMember();
+        
       }
 
       //fetch member's info on this line
@@ -184,6 +197,12 @@ export default function ExtMemberForm({
 
       return () => subscription.unsubscribe();
     }, [form])
+
+  if(isLoading){
+    return(
+      <p>Please wait...</p>
+    )
+  }
 
   return (
     <div className='container mx-auto px-4 py-4'>
