@@ -101,8 +101,9 @@ export default function ExtMemberForm({
 
           console.log('member details', resp);
 
-          if(!resp){
-            if(!resp?.cardKey && resp?.cardKey.length > 0){
+          if(resp){
+            console.log('dumaan')
+            if(resp?.cardKey && resp?.cardKey.length > 0){
               router.push(`/ext/v1/tenants/${params?.client_id}/members/${params?.id}/profile?uid=${searchParams?.uid}`)
             }
           }
@@ -122,7 +123,9 @@ export default function ExtMemberForm({
           
           setCardKey(searchParams?.uid);      
           
-          setIsLoading(false);
+          if(!resp){
+            setIsLoading(false);
+          }
         }
 
         initializeMember();

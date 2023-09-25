@@ -119,7 +119,7 @@ export default function Companies(){
           }
         }
       ]
-    ,[]);
+    ,[router]);
 
     return (
         <div>

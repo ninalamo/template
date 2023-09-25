@@ -107,6 +107,7 @@ export default function ClientMembers({
           )
         }
       }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     ], [])
 
 

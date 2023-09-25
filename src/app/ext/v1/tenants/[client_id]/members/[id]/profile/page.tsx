@@ -9,6 +9,7 @@ import PinterestIcon from '@/app/icons/PinterestIcon'
 import TwitterIcon from '@/app/icons/TwitterIcon'
 import { MemberInfo } from '@/models/Member'
 import { getMemberInfo } from '@/services/ExternalService'
+import { useRouter } from 'next/navigation'
 
 export default function ExtMemberProfile({
     params,
@@ -22,16 +23,25 @@ export default function ExtMemberProfile({
 }) {
     const [memberInfo, setMemberInfo] = useState<MemberInfo>();
 
+    const router = useRouter();
+
     useEffect(() => {
         if(params?.client_id && params?.id){
             const fetchMember = async () => {
                 const resp = await getMemberInfo(params?.client_id, params?.id, searchParams?.uid? searchParams?.uid: "");
+
                 setMemberInfo(resp);
+
+                if(!resp){
+                    console.log('dumaan')
+                    router.push(`/ext/v1/tenants/${params?.client_id}/members/${params?.id}?uid=${searchParams?.uid}`)
+                }
+        
             }
 
             fetchMember();
         }
-    }, [params?.client_id, params?.id, searchParams?.uid])
+    }, [params?.client_id, params?.id, searchParams?.uid, router])
 
     const saveContact = () => {
         const contact = {
